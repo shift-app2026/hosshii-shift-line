@@ -1039,6 +1039,9 @@ html, body { max-width: 100%; overflow-x: hidden; }
     }
 
     window.onload = function() {
+      // 新しく読み込んだときの最初の画面は「お給料」。
+      // ほかのアプリへ一時的に移っただけなら、現在のタブを維持する。
+      switchTab('clock');
       renderSettingsJobTabs();
       renderSettingsJobContent(currentSettingsJobKey);
       initOverviewPage();
@@ -1059,6 +1062,12 @@ html, body { max-width: 100%; overflow-x: hidden; }
       renderCalendar();
       renderStandaloneShiftList();
     };
+
+    // 戻る操作などでページがブラウザの履歴キャッシュから復元された場合も、
+    // 新しいページ表示として「お給料」から始める。
+    window.addEventListener('pageshow', function(event) {
+      if (event.persisted) switchTab('clock');
+    });
 
     function getDayShifts(dateStr, jobKey) {
       const dayData = shiftsData[dateStr] || {};
