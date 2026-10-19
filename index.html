@@ -667,6 +667,25 @@ html, body { max-width: 100%; overflow-x: hidden; }
 #tab-settings .settings-job-picker{width:100%}
 @media(max-width:365px){#tab-settings .friend-register-title{font-size:11px}#tab-settings .friend-job-register-row{gap:4px!important}#tab-settings .friend-job-register-row button{padding-left:7px;padding-right:7px}#tab-settings .settings-job-picker{gap:4px}#tab-settings .settings-job-action{padding-left:5px;padding-right:5px}}
 </style>
+<style id="line-20261019-final-size-adjustments">
+/* バイト先登録の見出しを読みやすく、横一列を維持 */
+#tab-settings .friend-register-title{font-size:16px!important;line-height:1.3;letter-spacing:-.045em;flex-shrink:0}
+#tab-settings .friend-job-register-row{gap:5px!important}
+#tab-settings #newJobNameInline{min-width:0;padding-left:6px!important;padding-right:6px!important}
+#tab-settings .friend-job-register-row>button{padding-left:8px!important;padding-right:8px!important;flex-shrink:0}
+/* プルダウンと修正・削除の枠を同じ高さに */
+#tab-settings .settings-job-select-wrap{height:36px!important;min-height:36px!important;padding-top:0!important;padding-bottom:0!important;box-sizing:border-box}
+#tab-settings .settings-job-select-wrap select{height:34px!important;min-height:0!important;padding-top:0!important;padding-bottom:0!important;line-height:1.2}
+#tab-settings .settings-job-picker .settings-job-action{height:36px!important;min-height:36px!important;padding-top:0!important;padding-bottom:0!important;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box}
+/* シフト登録のバイト先選択も16pxに */
+#shiftInputModal .shift-job-sticky-row .shift-section-title{font-size:16px!important;line-height:1.3;letter-spacing:-.045em}
+@media(max-width:360px){
+ #tab-settings .friend-job-register-row{gap:3px!important}
+ #tab-settings .friend-register-title{font-size:15px!important}
+ #tab-settings .friend-job-register-row>button{padding-left:6px!important;padding-right:6px!important}
+ #shiftInputModal .shift-job-sticky-row .shift-section-title{font-size:15px!important}
+}
+</style>
 </head>
 <body class="flex justify-center p-1 sm:p-2 relative min-h-screen items-center">
 
