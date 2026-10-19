@@ -650,6 +650,23 @@ html, body { max-width: 100%; overflow-x: hidden; }
  #tab-settings .settings-job-name{font-size:14px!important}
 }
 </style>
+
+<style id="oct19-compact-job-controls">
+/* シフト登録：日付とバイト先をスクロール領域の外に置き、常時表示 */
+#shiftInputModal .shift-job-sticky-row{padding:0 0 7px;border-bottom:1px solid #f0e3e7}
+#shiftInputModal .shift-job-sticky-row .shift-section-title{font-size:clamp(12px,3.4vw,15px)!important}
+#shiftInputModal #modalDateTitle{font-size:clamp(15px,4.1vw,18px)!important}
+#shiftInputModal .shift-date-nav{margin:0 0 3px!important;padding:2px!important;min-height:37px!important}
+#shiftInputModal #modalJobSelectContainer .friend-modal-job-choice{padding:1px 6px!important}
+#shiftInputModal #modalJobSelectContainer select{padding:5px 1px!important}
+/* 設定：入力と登録を一列にし、操作ボタンは選択先の淡色に */
+#tab-settings .friend-job-register-row{flex-wrap:nowrap!important;min-width:0}
+#tab-settings .friend-register-title{font-size:clamp(11px,3.2vw,14px)}
+#tab-settings #newJobNameInline{font-size:clamp(12px,3.5vw,14px)}
+#tab-settings .settings-job-action{background:var(--job-action-bg,#edf5ff)!important;background-color:var(--job-action-bg,#edf5ff)!important;border:1px solid var(--job-action-border,#2875e7)!important;color:#111827!important;-webkit-text-fill-color:#111827!important;box-shadow:none!important}
+#tab-settings .settings-job-picker{width:100%}
+@media(max-width:365px){#tab-settings .friend-register-title{font-size:11px}#tab-settings .friend-job-register-row{gap:4px!important}#tab-settings .friend-job-register-row button{padding-left:7px;padding-right:7px}#tab-settings .settings-job-picker{gap:4px}#tab-settings .settings-job-action{padding-left:5px;padding-right:5px}}
+</style>
 </head>
 <body class="flex justify-center p-1 sm:p-2 relative min-h-screen items-center">
 
@@ -760,12 +777,13 @@ html, body { max-width: 100%; overflow-x: hidden; }
       </div>
       <div class="shift-date-nav shrink-0"><button type="button" onclick="shiftModalChangeDay(-1)">◀ 前日</button><h3 id="modalDateTitle">日付</h3><button type="button" onclick="shiftModalChangeDay(1)">翌日 ▶</button></div>
 
+      <div class="shift-job-sticky-row shrink-0 flex items-center gap-2 min-w-0">
+        <span class="shift-section-title whitespace-nowrap">【バイト先選択】</span>
+        <div id="modalJobSelectContainer" class="flex-1 min-w-0"></div>
+      </div>
       <div id="shiftInputScrollArea" class="space-y-3 overflow-y-auto pr-1 flex-1 no-scrollbar" onscroll="updateShiftScrollHint()">
         <!-- 【シフト登録】 -->
         <div class="space-y-1.5">
-          <span class="shift-section-title">【バイト先選択】</span>
-          <div id="modalJobSelectContainer" class="w-full min-w-0"></div>
-
           <div class="flex space-x-2 pt-1">
             <button type="button" id="modalTypeWorkBtn" onclick="setModalShiftType(false)" class="flex-1 py-2.5 rounded-xl text-sm font-bold border transition bg-stone-100 text-stone-900 border-stone-300 shadow-sm">通常勤務</button>
             <button type="button" id="modalTypePaidBtn" onclick="setModalShiftType(true)" class="flex-1 py-2.5 rounded-xl text-sm font-bold border transition bg-white text-stone-700 border-stone-200 hover:bg-stone-50">☆ 有給休暇</button>
@@ -1031,11 +1049,12 @@ html, body { max-width: 100%; overflow-x: hidden; }
 
         <div class="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm space-y-3">
           <div class="space-y-2">
-            <div class="friend-job-register-row flex items-center justify-between gap-2">
-              <button type="button" onclick="registerNewJob()" class="bg-rose-900 text-rose-50 hover:bg-rose-800 font-bold px-4 py-2.5 rounded-xl text-xs sm:text-sm transition shadow-sm whitespace-nowrap">バイト名の登録</button>
-              <span class="friend-job-limit text-xs sm:text-sm font-bold text-stone-800">3件まで登録できます♡</span>
+            <div class="friend-job-register-row flex items-center gap-1.5">
+              <span class="friend-register-title font-bold text-stone-900 whitespace-nowrap">【バイト先登録】</span>
+              <input id="newJobNameInline" type="text" maxlength="8" placeholder="新しいバイト先" aria-label="新しいバイト先名" class="min-w-0 flex-1 border border-stone-300 rounded-lg px-2 py-2 text-sm text-stone-900 bg-white" onkeydown="if(event.key==='Enter'){event.preventDefault();registerNewJobInline()}">
+              <button type="button" onclick="registerNewJobInline()" class="bg-rose-900 text-white font-bold px-2.5 py-2 rounded-lg text-sm whitespace-nowrap">登録</button>
             </div>
-            <div class="friend-job-hint text-xs font-bold text-stone-800">※登録すると、時給関係の登録ができます。</div>
+            <div class="friend-job-hint text-xs font-bold text-stone-800">※3件まで登録できます。選択してから入力してね♡</div>
             <div id="settingsJobTabs" class="space-y-1.5"></div>
           </div>
 
@@ -1566,7 +1585,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
       const keys=getActiveJobKeys();
       const modalJobDotColor = currentSelectedJobKey === 'job1' ? '#2875E7' : currentSelectedJobKey === 'job2' ? '#488E37' : '#B97461';
       const modalJobTint = currentSelectedJobKey === 'job1' ? '#edf5ff' : currentSelectedJobKey === 'job2' ? '#edf8ed' : '#fff4ee';
-      container.innerHTML=`<div class="friend-modal-job-choice" style="background:${modalJobTint};border-color:${modalJobDotColor}55"><span class="modal-job-color-dot" style="background:${modalJobDotColor}" aria-hidden="true"></span><select aria-label="バイト先を選択" onchange="switchModalJobTab(this.value)">${keys.map(jk=>`<option value="${jk}" ${jk===currentSelectedJobKey?'selected':''}>${(configData[jk]?.name||jk).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</option>`).join('')}</select><span class="friend-modal-selected-tag">✨選択中</span></div>`;
+      container.innerHTML=`<div class="friend-modal-job-choice" style="background:${modalJobTint};border-color:${modalJobDotColor}55"><span class="modal-job-color-dot" style="background:${modalJobDotColor}" aria-hidden="true"></span><select aria-label="バイト先を選択" onchange="switchModalJobTab(this.value)">${keys.map(jk=>`<option value="${jk}" ${jk===currentSelectedJobKey?'selected':''}>${esc(configData[jk]?.name || 'バイト先未登録')}</option>`).join('')}</select></div>`;
       const warnEl=document.getElementById('modalWageWarn');if(warnEl){const noWage=!jobHasWage(currentSelectedJobKey);warnEl.classList.toggle('hidden',!noWage);if(noWage)warnEl.textContent='⚠️ このバイト先は時給が未設定です。設定タブで時給を入力してね♡';}
     }
 
@@ -1666,7 +1685,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
         renderSettingsJobTabs();
         renderSettingsJobContent(currentSettingsJobKey);
         refreshAll();
-        showToast("バイト先名を変更しました");
+        showToast(isNewRegistration ? "バイト先を登録しました♡" : "バイト先名を変更しました");
       } catch (error) {
         console.error('バイト先名の保存後の画面更新に失敗しました:', error);
         const detail = error && (error.name || error.message)
@@ -2023,29 +2042,66 @@ html, body { max-width: 100%; overflow-x: hidden; }
     function renderSettingsJobTabs() {
       const container = document.getElementById('settingsJobTabs');
       if (!container) return;
-      container.innerHTML = '';
-
       const activeKeys = getActiveJobKeys();
-      const rowsHtml = activeKeys.map((jk) => {
-        const isSelected = (jk === currentSettingsJobKey);
-        const jobInlineStyle = getJobInlineStyle(jk, isSelected);
-        const actionBorderColor = getJobPalette(jk).dot;
-        const actionBg = getJobPalette(jk).bg;
-        const actionStyle = `background:${actionBg};border-color:${actionBorderColor};color:#111827;`;
-        return `
-          <div class="settings-job-card ${isSelected ? 'is-selected' : ''} flex items-center gap-1.5 w-full min-w-0 rounded-xl px-2 py-2" style="${jobInlineStyle}">
-            <button type="button" onclick="switchSettingsJobTab('${jk}')" aria-pressed="${isSelected}"
-              class="settings-job-name flex-1 min-w-0 px-1 py-1 text-sm font-bold text-left transition truncate">
-              ${getJobLabelHtml(jk, 'settings-job-label')}
-            </button>
-            <button type="button" onclick="renameJobPrompt('${jk}')" title="バイト先名を修正"
-              class="settings-job-action shrink-0 px-2 py-1.5 rounded-lg border text-xs font-bold whitespace-nowrap" style="${actionStyle}">✏️ 修正</button>
-            <button type="button" onclick="deleteJob('${jk}')" title="このバイト先を削除"
-              class="settings-job-action settings-job-delete shrink-0 px-2 py-1.5 rounded-lg border text-xs font-bold whitespace-nowrap" style="${actionStyle}">削除</button>
-          </div>
-        `;
-      }).join('');
-      container.innerHTML = `<div class="space-y-1.5 w-full">${rowsHtml}</div>`;
+      if (!activeKeys.includes(currentSettingsJobKey)) currentSettingsJobKey = activeKeys[0];
+      const jk = currentSettingsJobKey;
+      const palette = getJobPalette(jk);
+      const tint = palette.bg;
+      const dot = palette.dot;
+      const esc = value => String(value ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      container.innerHTML = `<div class="settings-job-picker flex items-center gap-1.5 min-w-0">
+        <div class="settings-job-select-wrap flex-1 min-w-0 flex items-center gap-1.5 rounded-xl px-2 py-1" style="background:${tint};border:1px solid ${dot}66">
+          <span class="shrink-0 rounded-full" style="background:${dot};width:10px;height:10px" aria-hidden="true"></span>
+          <select aria-label="設定するバイト先を選択" class="min-w-0 flex-1 w-full bg-transparent text-stone-900 font-bold text-sm py-1.5" onchange="switchSettingsJobTab(this.value)">
+            ${activeKeys.map(key=>`<option value="${key}" ${key===jk?'selected':''}>${esc(getJobDisplayName(key))}</option>`).join('')}
+          </select>
+        </div>
+        <button type="button" onclick="renameJobPrompt(currentSettingsJobKey)" class="settings-job-action shrink-0 px-2 py-2 rounded-lg font-bold text-xs" style="--job-action-bg:${tint};--job-action-border:${dot}">✏️修正</button>
+        <button type="button" onclick="deleteJob(currentSettingsJobKey)" class="settings-job-action shrink-0 px-2 py-2 rounded-lg font-bold text-xs" style="--job-action-bg:${tint};--job-action-border:${dot}">削除</button>
+      </div>`;
+    }
+
+    function registerNewJobInline() {
+      const input = document.getElementById('newJobNameInline');
+      const name = input ? input.value.trim() : '';
+      if (!name) { showAlertModal('新しいバイト先名を入力してね♡'); return; }
+      if (name.length > 8) { showAlertModal('バイト先名は8文字以内で入力してね♡'); return; }
+      const activeKeys = getActiveJobKeys();
+      if (activeKeys.some(key => (configData[key]?.name || '').trim() === name)) {
+        showAlertModal('同じ名前のバイト先は登録されています♡'); return;
+      }
+      const emptyKey = activeKeys.find(key => !configData[key]?.name);
+      if (!emptyKey && activeKeys.length >= 3) {
+        showAlertModal('登録できるバイト先は3件までです。'); return;
+      }
+      const key = emptyKey || 'job' + (activeKeys.length + 1);
+      const previous = JSON.parse(JSON.stringify(configData));
+      const previousSettingsKey = currentSettingsJobKey;
+      const previousShiftKey = currentSelectedJobKey;
+      try {
+        // 切り替える前に、編集中の時給・手当を現在のバイト先に反映する。
+        if (configData[currentSettingsJobKey]?.name) syncSettingsFormToConfig(currentSettingsJobKey);
+        if (!configData[key]) configData[key] = createEmptyJobConfig();
+        configData[key].name = name;
+        if (!emptyKey) configData.jobCount = activeKeys.length + 1;
+        currentSettingsJobKey = key;
+        currentSelectedJobKey = key;
+        saveAllDataStorage();
+      } catch (error) {
+        configData = previous;
+        currentSettingsJobKey = previousSettingsKey;
+        currentSelectedJobKey = previousShiftKey;
+        console.error('バイト先の登録に失敗:', error);
+        showAlertModal('登録できませんでした。保存容量やブラウザの設定を確認してください。');
+        return;
+      }
+      // 保存に成功したときだけ入力欄をクリアする。
+      input.value = '';
+      renderSettingsJobTabs();
+      renderSettingsJobContent(key);
+      renderModalJobTabs();
+      refreshAll();
+      showToast(`「${name}」を登録しました♡`);
     }
 
     function registerNewJob() {
