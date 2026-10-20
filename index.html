@@ -719,6 +719,26 @@ html, body { max-width: 100%; overflow-x: hidden; }
 #modalPresetContainer .job-time {white-space:nowrap;}
 @media(max-width:370px){#presetRegisterModal .preset-time-row {gap:4px;}#presetRegisterModal .preset-time-row .wage-time[readonly]{font-size:14px !important;}}
 </style>
+<style id="line-mobile-final-tweaks-20261020">
+/* ワンタッチ登録の見出し：スマホでもハートが改行されない */
+#shiftInputModal #presetUnifiedSection .shift-section-title {
+  font-size: clamp(11px, 3.3vw, 14px) !important;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+  min-width: 0;
+}
+#shiftInputModal #presetUnifiedSection > div:first-child { gap: 4px !important; }
+#shiftInputModal #presetUnifiedSection > div:first-child > button { padding-left: 9px !important; padding-right: 9px !important; }
+/* 休憩枠だけほんの少し広く（ほかの入力欄は縮みすぎないように） */
+#presetRegisterModal .preset-time-row .preset-break-btn {
+  min-width: 72px !important;
+  padding-left: 6px !important;
+  padding-right: 6px !important;
+}
+@media(max-width:360px) {
+  #presetRegisterModal .preset-time-row .preset-break-btn { min-width: 66px !important; }
+}
+</style>
 </head>
 <body class="flex justify-center p-1 sm:p-2 relative min-h-screen items-center">
 
@@ -1071,7 +1091,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
               <input id="newJobNameInline" type="text" maxlength="8" placeholder="新しいバイト先" aria-label="新しいバイト先名" class="min-w-0 flex-1 border border-stone-300 rounded-lg px-2 py-2 text-sm text-stone-900 bg-white" onkeydown="if(event.key==='Enter'){event.preventDefault();registerNewJobInline()}">
               <button type="button" onclick="registerNewJobInline()" class="bg-rose-900 text-white font-bold px-2.5 py-2 rounded-lg text-sm whitespace-nowrap">登録</button>
             </div>
-            <div class="friend-job-hint text-xs font-bold text-stone-800">※3件まで登録できます。選択してから入力してね♡</div>
+            <div class="friend-job-hint text-xs font-bold text-stone-800">※3件まで登録OK~選んでから入力してね♡</div>
             <div id="settingsJobTabs" class="space-y-1.5"></div>
           </div>
 
