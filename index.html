@@ -686,6 +686,21 @@ html, body { max-width: 100%; overflow-x: hidden; }
  #shiftInputModal .shift-job-sticky-row .shift-section-title{font-size:15px!important}
 }
 </style>
+<style id="champagne-gold-refinement-20261020">
+/* 今日：装飾なしの控えめなシャンパンゴールド */
+#calendarDays .today-champagne-gold {background:linear-gradient(145deg,#fffdf6 0%,#fff4e8 100%)!important;border-color:#c99b58!important;box-shadow:inset 0 0 0 1px #f7dfae,0 1px 4px rgba(154,113,57,.14)!important;}
+/* 背景色と文字色を維持し、淡いピンクの枠だけ変更 */
+#tab-clock .border-rose-200,#tab-calendar .border-rose-200,#tab-settings .border-rose-200,#shiftInputModal .border-rose-200 {border-color:#dfc69d!important;}
+/* 給与内訳の大きな枠（淡いピンク背景は維持） */
+#tab-clock .border-rose-100 {border-color:#e7d5b8!important;}
+/* 選択後のマウス・タッチの黒枠を抑え、キーボード操作のフォーカスは残す */
+#modalJobSelectContainer select:focus:not(:focus-visible),#tab-settings .ito-settings-job-select select:focus:not(:focus-visible),#tab-settings .settings-job-card select:focus:not(:focus-visible){outline:none!important;box-shadow:none!important;}
+#modalJobSelectContainer select:focus-visible,#tab-settings .ito-settings-job-select select:focus-visible,#tab-settings .settings-job-card select:focus-visible{outline:2px solid #4c87d5!important;outline-offset:1px!important;}
+/* カレンダー凡例は少しだけ読みやすく、狭い端末では収まるよう調整 */
+#calendarJobLegend .calendar-legend-first-row .calendar-legend-label{font-size:clamp(11px,3.25vw,14px)!important;letter-spacing:-.03em;padding:4px 4px!important;}
+#calendarJobLegend .calendar-legend-first-row .calendar-payday-legend{font-size:clamp(11px,3.25vw,14px)!important;letter-spacing:-.03em;}
+#calendarJobLegend .calendar-legend-second-row .calendar-legend-label{font-size:14px!important;}
+</style>
 </head>
 <body class="flex justify-center p-1 sm:p-2 relative min-h-screen items-center">
 
@@ -801,51 +816,11 @@ html, body { max-width: 100%; overflow-x: hidden; }
         <div id="modalJobSelectContainer" class="flex-1 min-w-0"></div>
       </div>
       <div id="shiftInputScrollArea" class="space-y-3 overflow-y-auto pr-1 flex-1 no-scrollbar" onscroll="updateShiftScrollHint()">
-        <!-- 【シフト登録】 -->
-        <div class="space-y-1.5">
-          <div class="flex space-x-2 pt-1">
-            <button type="button" id="modalTypeWorkBtn" onclick="setModalShiftType(false)" class="flex-1 py-2.5 rounded-xl text-sm font-bold border transition bg-stone-100 text-stone-900 border-stone-300 shadow-sm">通常勤務</button>
-            <button type="button" id="modalTypePaidBtn" onclick="setModalShiftType(true)" class="flex-1 py-2.5 rounded-xl text-sm font-bold border transition bg-white text-stone-700 border-stone-200 hover:bg-stone-50">☆ 有給休暇</button>
-          </div>
-        </div>
-
-        <!-- 【ワンタッチ時間登録】 -->
-        <div class="space-y-1.5 pt-1 border-t border-stone-100">
-          <div class="flex items-center gap-2 flex-wrap">
-            <button type="button" onclick="openPresetRegisterModal()" class="flex-1 min-w-0 py-2.5 px-2 bg-rose-50 text-rose-900 border border-rose-200 hover:bg-rose-100 rounded-xl font-bold text-sm transition shadow-sm">【ワンタッチ時間登録】</button>
-            <button type="button" onclick="openPresetHelpModal()" aria-haspopup="dialog" aria-controls="presetHelpModal" class="shrink-0 px-3 py-2 bg-amber-100 text-amber-900 border border-amber-300 hover:bg-amber-200 rounded-full font-bold text-xs transition shadow-sm">※見てね♡</button>
-          </div>
-        </div>
-
-        <!-- 【ワンタッチ時間登録一覧】 -->
-        <div class="space-y-1.5 pt-1 border-t border-stone-100">
-          <span class="text-sm font-bold text-stone-800">【ワンタッチ時間登録一覧】</span>
-          <p class="text-xs font-bold text-stone-600">※ここでは時間の修正はできません。</p>
-          <div id="modalPresetContainer" class="space-y-2 text-xs"></div>
-        </div>
-
-        <!-- 【新規シフト入力】 -->
-        <div class="space-y-2 pt-1 border-t border-stone-100">
-          <div class="flex justify-between items-center">
-            <span class="text-sm font-bold text-stone-800">【新規シフト入力】</span>
-          </div>
-          <div id="modalCustomPresetContainer" class="space-y-2"></div>
-          <div class="flex items-center justify-between gap-2 pt-1">
-            <p class="text-xs font-bold text-stone-600 whitespace-nowrap">※時間登録を直接できます。</p>
-            <button type="button" onclick="registerNewPresetAndRegister()" class="shrink-0 px-5 py-2.5 bg-rose-900 text-rose-50 hover:bg-rose-800 rounded-xl font-bold text-sm transition shadow-sm">登録</button>
-          </div>
-        </div>
-
-        <!-- 【この日のシフト一覧】 -->
-        <div class="space-y-1.5 pt-1 border-t border-stone-100">
-          <div class="flex justify-between items-center">
-            <span class="text-sm font-bold text-stone-800">【この日のシフト一覧】</span>
-          </div>
-          <p class="text-xs font-bold text-stone-600">選択した日付に登録したシフトが表示されます。</p>
-          <div id="modalSelectedDateSummaryContent" class="space-y-2 text-xs text-stone-700 pt-1">
-            <span class="text-stone-400">シフトは登録されていません</span>
-          </div>
-        </div>
+        <div class="space-y-1.5"><div class="flex space-x-2 pt-1"><button type="button" id="modalTypeWorkBtn" onclick="setModalShiftType(false)" class="flex-1 py-2 rounded-xl text-sm font-bold border transition bg-stone-100 text-stone-900 border-stone-300 shadow-sm">通常勤務</button><button type="button" id="modalTypePaidBtn" onclick="setModalShiftType(true)" class="flex-1 py-2 rounded-xl text-sm font-bold border transition bg-white text-stone-700 border-stone-200">☆ 有給休暇</button></div></div>
+        <div class="space-y-1.5 pt-2 border-t border-stone-100"><span id="modalShiftListHeading" class="shift-section-title">【この日のシフト一覧】</span><div id="modalSelectedDateSummaryContent" class="space-y-2 text-xs text-stone-700 pt-1"><span class="text-stone-400">シフトは登録されていません</span></div></div>
+        <div class="space-y-2 pt-2 border-t border-stone-100"><div class="flex justify-between items-center gap-2"><span class="shift-section-title">【勤務時間を登録】</span><button type="button" onclick="registerNewPresetAndRegister()" class="shrink-0 px-4 py-1.5 bg-rose-900 text-white rounded-xl font-bold text-sm">登録</button></div><div id="modalCustomPresetContainer" class="space-y-2"></div></div>
+        <div class="flex items-center justify-between gap-2 pt-2 border-t border-stone-100"><span class="shift-section-title">【ワンタッチ時間登録】</span><button type="button" onclick="openPresetRegisterModal()" class="shrink-0 px-3 py-1.5 bg-pink-50 text-rose-900 border border-rose-200 rounded-xl font-bold text-sm">＋ 新規登録</button></div>
+        <div class="space-y-1.5 pt-2 border-t border-stone-100"><span class="shift-section-title">【ワンタッチ時間登録一覧】</span><p class="text-xs font-bold text-stone-600">※ここでは時間の修正はできません。</p><div id="modalPresetContainer" class="space-y-2 text-xs"></div></div>
       </div>
 
       <div id="shiftScrollHint" class="shrink-0 text-center text-[11px] font-bold text-stone-400 py-1 hidden" aria-hidden="true">↓ 下に続きがあります</div>
@@ -3202,10 +3177,10 @@ html, body { max-width: 100%; overflow-x: hidden; }
         const colorCls = isSunHol ? "text-rose-600" : (isSat ? "text-sky-600" : "text-stone-800");
         
         let dayClass = `p-1 rounded-xl font-bold flex flex-col items-center justify-center min-h-[52px] ${colorCls} `;
-        if (isToday) dayClass += "bg-rose-50 border-2 border-rose-300 shadow-[0_1px_2px_rgba(0,0,0,0.05)]";
+        if (isToday) dayClass += "today-champagne-gold border-2";
         else dayClass += "bg-stone-50/70 border border-stone-200/70";
         dayClass += " cursor-pointer";
-        if (dateStr === calSelectedDateStr) dayClass += " ring-2 ring-rose-500";
+        // 選択した日付の強調枠は付けない（今日の表示だけ残す）
 
         let dayNumDisplay = isPayday 
           ? `<div class="flex items-center justify-center"><span class="text-base font-bold leading-tight">${d.getDate()}</span>${paydayHtml}</div>`
