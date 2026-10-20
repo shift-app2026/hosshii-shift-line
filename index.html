@@ -44,6 +44,14 @@
 #goalRing #goalCurrentPay { color: #4c0519 !important; font-size: clamp(25px, 7vw, 34px) !important; }
 #goalRing #goalPercentText { background: transparent !important; box-shadow: none !important; color: #a73561 !important; font-size: 15px !important; padding: 0 !important; }
 
+
+/* ワンタッチ時間登録：休憩を広めに、登録一覧は同じ窓で確認 */
+#presetRegisterModal .preset-time-row { gap: 5px !important; padding: 6px !important; }
+#presetRegisterModal .preset-time-row .preset-break-btn { min-width: 68px; min-height: 49px; padding: 7px 5px; font-size: 12px !important; }
+#presetRegisterModal .preset-time-row .wage-time[readonly] { font-size: clamp(14px, 4.2vw, 17px) !important; padding-left: 3px !important; padding-right: 26px !important; }
+#presetRegisterModal .preset-time-row .time-clock-button { width: 25px !important; right: 0 !important; }
+@media(max-width:360px){ #presetRegisterModal .preset-time-row .preset-break-btn { min-width: 62px; font-size: 11px !important; } }
+#presetRegisterModal .preset-just-added { background: #fff1d6 !important; border-color: #d5a557 !important; transition: background-color 0.5s ease; }
 </style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -701,6 +709,16 @@ html, body { max-width: 100%; overflow-x: hidden; }
 #calendarJobLegend .calendar-legend-first-row .calendar-payday-legend{font-size:clamp(11px,3.25vw,14px)!important;letter-spacing:-.03em;}
 #calendarJobLegend .calendar-legend-second-row .calendar-legend-label{font-size:14px!important;}
 </style>
+<style>
+/* LINE版 ワンタッチ登録の省スペース調整 */
+#toastMessage {max-width:calc(100vw - 24px);}
+#toastText {overflow-wrap:anywhere;word-break:normal;}
+#presetRegisterModal .preset-time-row .wage-time[readonly] {height:43px !important;font-size:15px !important;padding-left:3px !important;padding-right:27px !important;}
+#presetRegisterModal .preset-time-row .time-clock-button {height:33px !important;width:26px !important;right:0 !important;font-size:13px !important;}
+#modalPresetContainer .preset-just-added {background:#e5f5ea !important;border-color:#64ad80 !important;transition:background-color .3s ease;}
+#modalPresetContainer .job-time {white-space:nowrap;}
+@media(max-width:370px){#presetRegisterModal .preset-time-row {gap:4px;}#presetRegisterModal .preset-time-row .wage-time[readonly]{font-size:14px !important;}}
+</style>
 </head>
 <body class="flex justify-center p-1 sm:p-2 relative min-h-screen items-center">
 
@@ -819,8 +837,11 @@ html, body { max-width: 100%; overflow-x: hidden; }
         <div class="space-y-1.5"><div class="flex space-x-2 pt-1"><button type="button" id="modalTypeWorkBtn" onclick="setModalShiftType(false)" class="flex-1 py-2 rounded-xl text-sm font-bold border transition bg-stone-100 text-stone-900 border-stone-300 shadow-sm">通常勤務</button><button type="button" id="modalTypePaidBtn" onclick="setModalShiftType(true)" class="flex-1 py-2 rounded-xl text-sm font-bold border transition bg-white text-stone-700 border-stone-200">☆ 有給休暇</button></div></div>
         <div class="space-y-1.5 pt-2 border-t border-stone-100"><span id="modalShiftListHeading" class="shift-section-title">【この日のシフト一覧】</span><div id="modalSelectedDateSummaryContent" class="space-y-2 text-xs text-stone-700 pt-1"><span class="text-stone-400">シフトは登録されていません</span></div></div>
         <div class="space-y-2 pt-2 border-t border-stone-100"><div class="flex justify-between items-center gap-2"><span class="shift-section-title">【勤務時間を登録】</span><button type="button" onclick="registerNewPresetAndRegister()" class="shrink-0 px-4 py-1.5 bg-rose-900 text-white rounded-xl font-bold text-sm">登録</button></div><div id="modalCustomPresetContainer" class="space-y-2"></div></div>
-        <div class="flex items-center justify-between gap-2 pt-2 border-t border-stone-100"><span class="shift-section-title">【ワンタッチ時間登録】</span><button type="button" onclick="openPresetRegisterModal()" class="shrink-0 px-3 py-1.5 bg-pink-50 text-rose-900 border border-rose-200 rounded-xl font-bold text-sm">＋ 新規登録</button></div>
-        <div class="space-y-1.5 pt-2 border-t border-stone-100"><span class="shift-section-title">【ワンタッチ時間登録一覧】</span><p class="text-xs font-bold text-stone-600">※ここでは時間の修正はできません。</p><div id="modalPresetContainer" class="space-y-2 text-xs"></div></div>
+        <section class="space-y-2 pt-2 border-t border-stone-100" id="presetUnifiedSection">
+          <div class="flex items-center justify-between gap-1.5"><span class="shift-section-title">【ワンタッチ登録しましょ～♡】</span><button type="button" onclick="openPresetRegisterModal()" class="shrink-0 px-3 py-1.5 bg-pink-50 text-rose-900 border border-rose-200 rounded-xl font-bold text-sm">＋登録</button></div>
+          <p class="text-[11px] leading-snug text-stone-600">※次回から入力が楽になるよ♪ 登録一覧から選択してね。</p>
+          
+        </section>
       </div>
 
       <div id="shiftScrollHint" class="shrink-0 text-center text-[11px] font-bold text-stone-400 py-1 hidden" aria-hidden="true">↓ 下に続きがあります</div>
@@ -833,27 +854,29 @@ html, body { max-width: 100%; overflow-x: hidden; }
     </div>
   </div>
 
-  <!-- ワンタッチ時間登録画面 -->
+  <!-- ワンタッチ時間登録：横並び・コンパクト版 -->
   <div id="presetRegisterModal" style="z-index:60" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-3 hidden">
-    <div class="bg-white rounded-3xl p-4 sm:p-5 w-full max-w-sm shadow-2xl border border-stone-200 space-y-3">
-      <h3 class="text-base font-bold text-stone-900 tracking-wide border-b border-stone-200 pb-2.5">ワンタッチ時間登録</h3>
-      <div class="flex items-center justify-between gap-2">
-        <p class="preset-hint font-bold text-rose-900 whitespace-nowrap">※入力後は必ず「登録」を押してね</p>
-        <button type="button" onclick="submitPresetRegister()" class="px-4 py-2 bg-rose-900 text-white hover:bg-rose-800 rounded-xl font-bold text-sm transition shadow-sm whitespace-nowrap shrink-0">登録</button>
+    <div class="bg-white rounded-3xl p-3 sm:p-4 w-full max-w-sm shadow-2xl border border-stone-200 space-y-2.5 flex flex-col max-h-[92dvh] overflow-hidden">
+      <div class="flex items-center justify-between gap-2 border-b border-stone-200 pb-2">
+        <h3 class="text-sm font-bold text-stone-900">ワンタッチ時間登録</h3>
+        <button type="button" onclick="submitPresetRegister()" class="px-4 py-1.5 bg-rose-900 text-white rounded-xl font-bold text-sm whitespace-nowrap">登録</button>
       </div>
-      <div class="preset-time-row flex items-center gap-2">
+      <p class="text-[11px] font-bold text-rose-900">※入力後は必ず「登録」を押してね</p>
+      <div class="preset-time-row flex items-center gap-1.5 bg-stone-50 border border-stone-200 rounded-2xl p-2">
         <div class="time-field-wrap relative flex-1 min-w-0">
-          <input type="text" readonly inputmode="none" step="60" onclick="triggerTimePicker(this.id)" autocomplete="off" id="pr_start" placeholder="00:00" class="wage-time clock-time w-full border rounded-lg border-stone-200 bg-stone-50 font-bold text-center"><button type="button" aria-label="開始時間を選択" onclick="triggerTimePicker('pr_start')" class="time-clock-button absolute right-1 top-1/2 -translate-y-1/2 text-stone-500 flex items-center justify-center rounded-md bg-white/90">🕒</button>
+          <input type="text" readonly inputmode="none" onclick="triggerTimePicker(this.id)" autocomplete="off" id="pr_start" value="00:00" class="wage-time clock-time w-full border rounded-lg border-stone-200 bg-white font-bold text-center"><button type="button" aria-label="開始時間を選択" onclick="triggerTimePicker('pr_start')" class="time-clock-button absolute right-1 top-1/2 -translate-y-1/2 text-stone-500 flex items-center justify-center rounded-md bg-white/90">🕒</button>
         </div>
-        <span class="font-bold text-stone-500 text-base shrink-0">〜</span>
+        <span class="font-bold text-stone-500 shrink-0">〜</span>
         <div class="time-field-wrap relative flex-1 min-w-0">
-          <input type="text" readonly inputmode="none" step="60" onclick="triggerTimePicker(this.id)" autocomplete="off" id="pr_end" placeholder="00:00" class="wage-time clock-time w-full border rounded-lg border-stone-200 bg-stone-50 font-bold text-center"><button type="button" aria-label="終了時間を選択" onclick="triggerTimePicker('pr_end')" class="time-clock-button absolute right-1 top-1/2 -translate-y-1/2 text-stone-500 flex items-center justify-center rounded-md bg-white/90">🕒</button>
+          <input type="text" readonly inputmode="none" onclick="triggerTimePicker(this.id)" autocomplete="off" id="pr_end" value="00:00" class="wage-time clock-time w-full border rounded-lg border-stone-200 bg-white font-bold text-center"><button type="button" aria-label="終了時間を選択" onclick="triggerTimePicker('pr_end')" class="time-clock-button absolute right-1 top-1/2 -translate-y-1/2 text-stone-500 flex items-center justify-center rounded-md bg-white/90">🕒</button>
         </div>
+        <button type="button" onclick="openBreakSelectModal('preset')" class="preset-break-btn shrink-0 bg-white border border-stone-200 rounded-lg font-bold text-stone-700 whitespace-nowrap">☕ <span id="pr_break_disp">0分</span></button>
       </div>
-      <div class="flex items-center justify-between gap-2 pt-1">
-        <button type="button" onclick="openBreakSelectModal('preset')" class="px-2 py-2 bg-stone-100 hover:bg-stone-200 border border-stone-200 rounded-xl font-bold text-sm text-stone-700 transition whitespace-nowrap">☕ 休憩時間 <span id="pr_break_disp">0分</span></button>
-        <button type="button" onclick="closePresetRegisterModal()" class="px-7 py-2 rounded-xl bg-rose-900 text-white hover:bg-rose-800 text-sm font-bold transition shadow-sm whitespace-nowrap">閉じる</button>
-      </div>
+      <section class="min-h-0 flex flex-col border-t border-stone-200 pt-2 gap-2" aria-label="登録済みワンタッチ時間">
+        <h4 class="text-sm font-bold text-stone-900 shrink-0">【登録済み一覧】</h4>
+        <div id="modalPresetContainer" class="space-y-2 text-xs overflow-y-auto min-h-0 pr-1" style="overscroll-behavior:contain; max-height: min(43dvh, 340px);"></div>
+      </section>
+      <div class="pt-2 border-t border-stone-200 shrink-0"><button type="button" onclick="closePresetRegisterModal()" class="w-full py-2.5 rounded-xl bg-rose-900 text-white text-sm font-bold">閉じる</button></div>
     </div>
   </div>
 
@@ -2585,7 +2608,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
           const breakMins = Number(p.breakMins) || 0;
 
           container.innerHTML += `
-            <div class="bg-white border border-stone-200 py-2.5 px-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-2 text-xs sm:text-sm">
+            <div class="preset-row-highlight-target bg-white border border-stone-200 py-2 px-2 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-1.5 text-xs sm:text-sm" data-preset-start="${p.start}" data-preset-end="${p.end}" data-preset-break="${breakMins}">
               <span class="font-bold text-stone-800 job-time">${p.start}〜${p.end}</span>
               <span class="font-bold text-stone-600 flex-1 text-center whitespace-nowrap">休憩${breakMins}分</span>
               <div class="flex items-center gap-1.5 shrink-0">
@@ -2694,6 +2717,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
 
     function openPresetRegisterModal() {
       clearPresetRegisterForm();
+      renderModalPresetButtons();
       document.getElementById('presetRegisterModal').classList.remove('hidden');
     }
     function closePresetRegisterModal() {
@@ -2701,8 +2725,8 @@ html, body { max-width: 100%; overflow-x: hidden; }
       renderModalPresetButtons();
     }
     function clearPresetRegisterForm() {
-      document.getElementById('pr_start').value = '';
-      document.getElementById('pr_end').value = '';
+      document.getElementById('pr_start').value = '00:00';
+      document.getElementById('pr_end').value = '00:00';
       prBreakMins = 0;
       document.getElementById('pr_break_disp').textContent = '0分';
     }
@@ -2710,7 +2734,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
       const start = document.getElementById('pr_start').value;
       const end = document.getElementById('pr_end').value;
       const breakMins = prBreakMins;
-      if (!start || !end) { showToast("開始と終了時間を入力してください"); return; }
+      if (!start || !end || (start === "00:00" && end === "00:00")) { showToast("開始と終了時間を選んでね"); return; }
       if (start === end) { showToast("開始と終了が同じ時間だよ。変えてね♡"); return; }
       const job = configData[currentSelectedJobKey] || configData.job1;
       if (!job.presets) job.presets = [];
@@ -2720,7 +2744,15 @@ html, body { max-width: 100%; overflow-x: hidden; }
       saveAllDataStorage();
       clearPresetRegisterForm();
       renderModalPresetButtons();
-      showToast("【ワンタッチ時間登録一覧】に登録しました♡");
+      const addedRow = document.querySelector('#modalPresetContainer .preset-row-highlight-target');
+      if (addedRow) {
+        const rows = [...document.querySelectorAll('#modalPresetContainer .preset-row-highlight-target')];
+        const match = rows.find(el => el.dataset.presetStart === start && el.dataset.presetEnd === end && Number(el.dataset.presetBreak) === breakMins);
+        if (match) {
+          match.classList.add('preset-just-added');
+          setTimeout(() => match.classList.remove('preset-just-added'), 2500);
+        }
+      }
     }
 
     function registerNewPresetAndRegister() {
