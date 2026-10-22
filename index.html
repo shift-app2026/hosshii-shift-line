@@ -4,6 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>マイシフト＆給料</title>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="マイシフト＆給料">
+  <meta property="og:description" content="シフト管理とお給料の目安がわかるアプリ">
+  <meta property="og:url" content="https://shift-app2026.github.io/hosshii-shift-line/">
+  <meta property="og:image" content="https://shift-app2026.github.io/hosshii-shift-line/icon-512.png?v=20261019">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+
+  
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="theme-color" content="#881337">
   
   <link rel="apple-touch-icon" href="./icon-192.png">
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
@@ -693,6 +707,18 @@ html, body { max-width: 100%; overflow-x: hidden; }
 #calendarJobLegend .calendar-legend-first-row .calendar-payday-legend{font-size:clamp(11px,3.25vw,14px)!important;letter-spacing:-.03em;}
 #calendarJobLegend .calendar-legend-second-row .calendar-legend-label{font-size:14px!important;}
 </style>
+<style id="shared-oct22-adjustments">
+.shift-preset-section .shift-section-title{font-size:clamp(13px,3.5vw,16px)}
+.shift-registered-row{font-size:clamp(12px,3.6vw,15px)!important;min-width:0}
+.shift-registered-row .job-time{font-size:inherit!important;white-space:nowrap;min-width:0}
+.shift-registered-row button{font-size:inherit!important;white-space:nowrap;padding:6px 9px!important}
+#presetRegisterModal .preset-time-row{gap:4px!important}
+#presetRegisterModal .preset-time-row .wage-time[readonly]{font-size:clamp(13px,3.8vw,16px)!important;padding-right:27px!important}
+#presetRegisterModal .preset-time-row button{white-space:nowrap;flex-shrink:0}
+#registerShiftButton,#registerPresetButton{background:#ede9fe!important;color:#4c1d95!important;border:1px solid #c4b5fd!important}
+#registerShiftButton.unsaved-registration,#registerPresetButton.unsaved-registration{background:#fce7f3!important;color:#831843!important;border:1px solid #f9a8d4!important}
+#toastMessage.shift-register-toast{top:auto!important;bottom:calc(115px + env(safe-area-inset-bottom,0px))!important;max-width:92vw;white-space:nowrap;font-size:clamp(12px,3.6vw,15px)!important}
+</style>
 </head>
 <body class="flex justify-center p-1 sm:p-2 relative min-h-screen items-center">
 
@@ -803,10 +829,13 @@ html, body { max-width: 100%; overflow-x: hidden; }
       <div class="ito-modal-job-fixed shrink-0"><div class="ito-modal-job-row"><span class="shift-section-title">【バイト先選択】</span><div id="modalJobSelectContainer" class="min-w-0"></div></div></div>
       <div id="shiftInputScrollArea" class="space-y-3 overflow-y-auto pr-1 flex-1 no-scrollbar" onscroll="updateShiftScrollHint()">
         <div class="space-y-2"><div class="flex space-x-2 pt-1"><button type="button" id="modalTypeWorkBtn" onclick="setModalShiftType(false)" class="flex-1 py-1.5 rounded-xl text-sm font-bold border bg-stone-100 border-stone-300">通常勤務</button><button type="button" id="modalTypePaidBtn" onclick="setModalShiftType(true)" class="flex-1 py-1.5 rounded-xl text-sm font-bold border bg-white border-stone-200">☆ 有給休暇</button></div></div>
-        <div class="space-y-1.5 border-t border-stone-100 pt-2"><span id="modalShiftListHeading" class="shift-section-title">【この日のシフト一覧】</span><div id="modalSelectedDateSummaryContent" class="space-y-2 pt-1"></div></div>
-        <div class="space-y-2 border-t border-stone-100 pt-2"><div class="flex items-center justify-between"><span class="shift-section-title">【勤務時間を登録】</span><button type="button" onclick="registerNewPresetAndRegister()" class="px-4 py-1.5 bg-rose-900 text-white rounded-xl text-sm font-bold">登録</button></div><div id="modalCustomPresetContainer" class="space-y-2"></div></div>
-        <div class="flex items-center justify-between gap-2 border-t border-stone-100 pt-2"><span class="shift-section-title">【ワンタッチ時間登録】</span><button type="button" onclick="openPresetRegisterModal()" class="px-3 py-1.5 rounded-xl bg-pink-50 text-rose-900 border border-rose-200 font-bold text-sm">＋ 新規登録</button></div>
-        <div class="space-y-1.5 border-t border-stone-100 pt-2"><span class="shift-section-title">【ワンタッチ時間登録一覧】</span><p class="text-xs font-bold text-stone-600">※ここでは時間の修正はできません。</p><div id="modalPresetContainer" class="space-y-2 text-xs"></div></div>
+        <div class="space-y-1.5 border-t border-stone-100 pt-2"><span id="modalShiftListHeading" class="shift-section-title">【シフト一覧】</span><div id="modalSelectedDateSummaryContent" class="space-y-2 pt-1"></div></div>
+        <div class="space-y-2 border-t border-stone-100 pt-2"><div class="flex items-center justify-between"><span class="shift-section-title">【勤務時間を登録】</span><button type="button" onclick="registerNewPresetAndRegister()" id="registerShiftButton" class="px-4 py-1.5 bg-rose-900 text-white rounded-xl text-sm font-bold">登録</button></div><div id="modalCustomPresetContainer" class="space-y-2"></div></div>
+        <section class="shift-preset-section space-y-2 border-t border-stone-100 pt-2">
+          <div class="flex items-center justify-between gap-2"><span class="shift-section-title">【ワンタッチ登録しましょ～♡】</span><button type="button" onclick="openPresetRegisterModal()" class="px-3 py-1.5 rounded-xl bg-pink-50 text-rose-900 border border-rose-200 font-bold text-sm shrink-0">＋登録</button></div>
+          <p class="text-[11px] font-bold text-stone-600">※次回から入力が楽になるよ♪ 登録一覧から選択してね。</p>
+          <div id="modalPresetContainer" class="space-y-2 text-xs"></div>
+        </section>
       </div>
 
       <div id="shiftScrollHint" class="shrink-0 text-center text-[11px] font-bold text-stone-400 py-1 hidden" aria-hidden="true">↓ 下に続きがあります</div>
@@ -821,10 +850,10 @@ html, body { max-width: 100%; overflow-x: hidden; }
   <!-- ワンタッチ時間登録画面 -->
   <div id="presetRegisterModal" style="z-index:60" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm flex items-center justify-center p-3 hidden">
     <div class="bg-white rounded-3xl p-4 sm:p-5 w-full max-w-sm shadow-2xl border border-stone-200 space-y-3">
-      <div class="flex items-center justify-between gap-2 border-b border-stone-200 pb-2.5"><h3 class="text-base font-bold text-stone-900 tracking-wide">ワンタッチ時間登録</h3><span id="presetRegisterJobName" class="text-sm font-bold text-stone-900" style="text-align:right;overflow-wrap:anywhere;"></span></div>
+      <div class="flex items-center justify-between gap-2 border-b border-stone-200 pb-2.5"><h3 class="text-base font-bold text-stone-900 tracking-wide">ワンタッチ時間登録</h3><span id="presetRegisterJobName" class="text-sm font-bold text-stone-900" style="text-align:right;overflow-wrap:anywhere;"></span><button type="button" onclick="closePresetRegisterModal()" aria-label="閉じる" class="px-2 py-1 rounded-lg border border-stone-200 text-stone-700 font-bold text-xs">✕ 閉じる</button></div>
       <div class="flex items-center justify-between gap-2">
         <p class="preset-hint font-bold text-rose-900 whitespace-nowrap">※入力後は必ず「登録」を押してね</p>
-        <button type="button" onclick="submitPresetRegister()" class="px-4 py-2 bg-rose-900 text-white hover:bg-rose-800 rounded-xl font-bold text-sm transition shadow-sm whitespace-nowrap shrink-0">登録</button>
+        <button type="button" onclick="submitPresetRegister()" id="registerPresetButton" class="px-4 py-2 bg-rose-900 text-white hover:bg-rose-800 rounded-xl font-bold text-sm transition shadow-sm whitespace-nowrap shrink-0">登録</button>
       </div>
       <div class="preset-time-row flex items-center gap-2">
         <div class="time-field-wrap relative flex-1 min-w-0">
@@ -834,11 +863,9 @@ html, body { max-width: 100%; overflow-x: hidden; }
         <div class="time-field-wrap relative flex-1 min-w-0">
           <input type="text" readonly inputmode="none" step="60" onclick="triggerTimePicker(this.id)" autocomplete="off" id="pr_end" placeholder="00:00" class="wage-time clock-time w-full border rounded-lg border-stone-200 bg-stone-50 font-bold text-center"><button type="button" aria-label="終了時間を選択" onclick="triggerTimePicker('pr_end')" class="time-clock-button absolute right-1 top-1/2 -translate-y-1/2 text-stone-500 flex items-center justify-center rounded-md bg-white/90">🕒</button>
         </div>
+        <button type="button" onclick="openBreakSelectModal('preset')" class="px-1.5 py-2 bg-stone-100 hover:bg-stone-200 border border-stone-200 rounded-xl font-bold text-xs text-stone-700 transition whitespace-nowrap">休憩 <span id="pr_break_disp">0分</span></button>
       </div>
-      <div class="flex items-center justify-between gap-2 pt-1">
-        <button type="button" onclick="openBreakSelectModal('preset')" class="px-2 py-2 bg-stone-100 hover:bg-stone-200 border border-stone-200 rounded-xl font-bold text-sm text-stone-700 transition whitespace-nowrap">☕ 休憩時間 <span id="pr_break_disp">0分</span></button>
-        <button type="button" onclick="closePresetRegisterModal()" class="px-7 py-2 rounded-xl bg-rose-900 text-white hover:bg-rose-800 text-sm font-bold transition shadow-sm whitespace-nowrap">閉じる</button>
-      </div>
+
     </div>
   </div>
 
@@ -863,6 +890,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
       
       <!-- タブ1: 給与 -->
       <div id="tab-clock" class="tab-content space-y-3">
+        <div id="trialBanner" class="hidden bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold px-2 py-2.5 rounded-2xl flex items-center justify-between gap-1" style="white-space:nowrap;font-size:clamp(9px,2.7vw,13px);letter-spacing:-0.025em"></div>
 
         <div class="flex justify-between items-center bg-gradient-to-br from-rose-950 via-rose-900 to-rose-950 text-rose-100 px-3 py-2 rounded-2xl shadow-md border border-rose-800/40 text-xs">
           <button type="button" onclick="changePayPeriodOffset(-1)" class="text-rose-100 font-bold px-3 py-1.5 hover:bg-white/10 rounded-xl transition text-sm">◀ 前月</button>
@@ -1246,6 +1274,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
       renderSettingsJobTabs();
       renderSettingsJobContent(currentSettingsJobKey);
       initOverviewPage();
+      updateTrialBanner();
       let autoTimer = null;
       const settingsArea = document.getElementById('settingsJobContentArea');
       ['input', 'change'].forEach(ev => settingsArea.addEventListener(ev, () => {
@@ -1442,7 +1471,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
 
       const [y, m, d] = dateStr.split('-');
       const titleEl = document.getElementById('modalDateTitle');
-      if (titleEl) { const weekday = ['日','月','火','水','木','金','土'][new Date(Number(y), Number(m) - 1, Number(d)).getDay()]; titleEl.innerText = `${Number(m)}月${Number(d)}日（${weekday}）`; const h=document.getElementById("modalShiftListHeading");if(h)h.textContent=`【${Number(m)}月${Number(d)}日（${weekday}）のシフト一覧】`; }
+      if (titleEl) { const weekday = ['日','月','火','水','木','金','土'][new Date(Number(y), Number(m) - 1, Number(d)).getDay()]; titleEl.innerText = `${Number(m)}月${Number(d)}日（${weekday}）`; const h=document.getElementById("modalShiftListHeading");if(h)h.textContent=`【${Number(m)}月${Number(d)}日（${weekday}）シフト一覧】`; }
 
       renderModalJobTabs();
       updateShiftEntryLayout();
@@ -1644,7 +1673,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
         const breakMins = Number(sh.breakMins) || 0;
 
         html += `
-          <div class="bg-stone-50 p-2.5 border rounded-xl border-stone-200 flex items-center justify-between gap-1 text-xs sm:text-sm">
+          <div class="shift-registered-row bg-stone-50 p-2 border rounded-xl border-stone-200 flex items-center justify-between gap-1">
             <span class="font-bold text-stone-800 job-time flex-1">${sh.start}〜${sh.end}</span>
             <span class="font-bold text-stone-600 whitespace-nowrap">休憩${breakMins}分</span>
             <button type="button" onclick="confirmShiftDeletion('${jk}', ${idx})" class="bg-stone-200 text-stone-700 hover:bg-stone-300 font-bold px-3 py-1.5 rounded-lg text-xs transition">削除</button>
@@ -1719,6 +1748,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
       const toastText = document.getElementById('toastText');
       if (!toast || !toastText) return;
       toast.classList.toggle('settings-save-toast', msg === '設定を保存しました');
+      toast.classList.toggle('shift-register-toast', !document.getElementById('shiftInputModal')?.classList.contains('hidden') && /登録しました/.test(msg));
       toastText.innerText = msg;
       if (undoFn) { const ub = document.createElement('button'); ub.textContent = '元に戻す'; ub.className = 'ml-3 underline font-bold text-rose-200'; ub.onclick = () => { undoFn(); toast.classList.remove('opacity-100'); toast.classList.add('opacity-0', 'pointer-events-none'); }; toastText.appendChild(ub); }
 
@@ -2564,10 +2594,12 @@ html, body { max-width: 100%; overflow-x: hidden; }
       if (breakTarget === 'preset') {
         prBreakMins = val;
         document.getElementById('pr_break_disp').textContent = val + '分';
+        document.getElementById('registerPresetButton')?.classList.add('unsaved-registration');
         closeBreakSelectModal();
         return;
       }
       newPresetForm.breakMins = val;
+      document.getElementById('registerShiftButton')?.classList.add('unsaved-registration');
       closeBreakSelectModal();
       renderModalCustomPresets();
     }
@@ -2579,6 +2611,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
       clearPresetRegisterForm();
       const label = document.getElementById('presetRegisterJobName');
       if (label) label.textContent = '● ' + getJobDisplayName(currentSelectedJobKey);
+      window.markRegisterSaved?.('registerPresetButton');
       document.getElementById('presetRegisterModal').classList.remove('hidden');
     }
     function closePresetRegisterModal() {
@@ -2602,7 +2635,8 @@ html, body { max-width: 100%; overflow-x: hidden; }
       const exists = job.presets.some(p => p.start === start && p.end === end && Number(p.breakMins || 0) === breakMins);
       if (exists) { showToast("すでに登録されている時間だよ"); return; }
       job.presets.push({ start, end, breakMins });
-      saveAllDataStorage();
+      if (!saveAllDataStorage()) { job.presets.pop(); return; }
+      window.markRegisterSaved?.('registerPresetButton');
       clearPresetRegisterForm();
       renderModalPresetButtons();
       showToast("【ワンタッチ時間登録一覧】に登録しました♡");
@@ -2614,6 +2648,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
       if (newPresetForm.start === newPresetForm.end) { showToast("開始と終了が同じ時間だよ。変えてね♡"); return; }
 
       if (!registerModalPresetTime(newPresetForm.start, newPresetForm.end, newPresetForm.breakMins)) { renderModalPresetButtons(); return; }
+      window.markRegisterSaved?.('registerShiftButton');
 
       newPresetForm = { start: '00:00', end: '00:00', breakMins: 0 };
       renderModalCustomPresets();
@@ -3378,6 +3413,52 @@ html, body { max-width: 100%; overflow-x: hidden; }
       return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
     }
 
+    const TRIAL_DAYS = 30;
+    const LSTEP_URL = '';
+    function openPaymentPage() {
+      if (LSTEP_URL) window.open(LSTEP_URL, '_blank'); else showToast('決済ページは準備中です');
+    }
+
+    function updateTrialBanner() {
+      const banner = document.getElementById('trialBanner');
+      if (!banner) return;
+
+      let startStr = localStorage.getItem('mybasket_trial_start');
+      if (!startStr) {
+        startStr = formatDateKey(new Date());
+        try { localStorage.setItem('mybasket_trial_start', startStr); } catch(e) { console.warn('trial start cannot be saved', e); }
+      }
+
+      const [sy, sm, sd] = startStr.split('-').map(Number);
+      const startDate = new Date(sy, sm - 1, sd);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      startDate.setHours(0, 0, 0, 0);
+
+      const passedDays = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+      const remainingDays = TRIAL_DAYS - passedDays;
+
+      banner.classList.remove('hidden');
+      banner.onclick = function(){ showAlertModal('現在、無料お試し期間中です♪ まずはアプリをゆっくりお試しください🌷 購入のご案内は、後日お知らせします。'); };
+      banner.style.cursor = 'pointer';
+
+      if (remainingDays > 0) {
+        banner.innerHTML = `
+          <span style="white-space:nowrap">✨ お試し終了まであと${remainingDays}日</span>
+          <span class="text-amber-700 underline" style="white-space:nowrap;flex-shrink:0">続けて使うには？</span>
+        `;
+        banner.classList.remove('bg-rose-50', 'border-rose-300', 'text-rose-900');
+        banner.classList.add('bg-amber-50', 'border-amber-200', 'text-amber-900');
+      } else {
+        banner.innerHTML = `
+          <span>お試し期間が終了しました</span>
+          <span class="text-rose-700 underline">購入について</span>
+        `;
+        banner.classList.remove('bg-amber-50', 'border-amber-200', 'text-amber-900');
+        banner.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-900');
+      }
+    }
+
     function exportAppData(event) {
       if (event) event.preventDefault();
       if (storageWriteBlocked) { showStorageSafetyWarning(); return; }
@@ -3470,7 +3551,7 @@ html, body { max-width: 100%; overflow-x: hidden; }
             shiftsData = sanitizeShifts(data.mybasket_shifts_v23 || data.mybasket_shifts_v22 || data.mybasket_shifts_v21 || {});
             let loadedWages = data.mybasket_wages_v77 || data.mybasket_wages_v76 || {};
             monthlyGoal = Number(loadedWages.monthlyGoal) || 0;
-            if (data.mybasket_trial_start) { localStorage.setItem('mybasket_trial_start', data.mybasket_trial_start); }
+            if (data.mybasket_trial_start) { localStorage.setItem('mybasket_trial_start', data.mybasket_trial_start); updateTrialBanner(); }
             configData = buildConfigData(loadedWages);
 
             if (!safeWriteAppJSON('mybasket_shifts_v23', shiftsData)) return;
@@ -3521,6 +3602,20 @@ html, body { max-width: 100%; overflow-x: hidden; }
  window.showShiftHelp=function(){document.getElementById('shiftUsageHelpModal')?.classList.remove('hidden');};
  window.closeShiftHelp=function(){document.getElementById('shiftUsageHelpModal')?.classList.add('hidden');};
  window.confirmShiftDeletion=function(jk,idx){deleteJobShiftIndexModal(jk,idx);};
+})();
+</script>
+<script id="shared-oct22-registration-state">
+(function(){
+ const mark=(id,dirty)=>document.getElementById(id)?.classList.toggle('unsaved-registration',dirty);
+ window.markRegisterSaved=(id)=>mark(id,false);
+ document.addEventListener('change',function(e){
+   if(e.target.closest('#shiftInputModal') && (e.target.closest('#modalCustomPresetContainer') || e.target.id==='new_preset_start' || e.target.id==='new_preset_end')) mark('registerShiftButton',true);
+   if(e.target.closest('#presetRegisterModal') && ['pr_start','pr_end'].includes(e.target.id)) mark('registerPresetButton',true);
+ });
+ document.addEventListener('click',function(e){
+   if(e.target.closest('#shiftInputModal') && e.target.closest('[onclick*="openBreakSelectModal"]')) mark('registerShiftButton',true);
+   if(e.target.closest('#presetRegisterModal') && e.target.closest('[onclick*="openBreakSelectModal"]')) mark('registerPresetButton',true);
+ });
 })();
 </script>
 </body>
