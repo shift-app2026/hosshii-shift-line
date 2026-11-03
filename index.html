@@ -1247,7 +1247,49 @@ background:#881337!important;background-color:#881337!important;border-color:#88
 #shiftInputModal.hosshii-view-only #shiftInputScrollArea select,
 #shiftInputModal.hosshii-view-only #shiftInputScrollArea textarea {pointer-events:none!important;opacity:.5!important;}
 #shiftInputModal.hosshii-view-only #shiftInputScrollArea .time-field-wrap {pointer-events:none!important;}
-</style></head>
+</style>
+<style id="hosshii-20261103-additional-layout-fixes">
+/* Equal-size monetary input boxes across transport and other allowances. */
+#tab-settings .allowance-period-grid {grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;}
+#tab-settings .allowance-period-grid > div {display:grid!important;grid-template-columns:3.35em minmax(0,1fr) 1em!important;column-gap:3px!important;align-items:center!important;min-width:0!important;}
+#tab-settings .allowance-period-grid > div > span:first-child {font-size:12px!important;white-space:nowrap!important;}
+#tab-settings .allowance-period-grid > div > input {width:100%!important;min-width:0!important;max-width:none!important;height:38px!important;box-sizing:border-box!important;padding:6px 2px!important;font-size:14px!important;}
+#tab-settings .allowance-period-grid > div > span:last-child {white-space:nowrap!important;}
+#tab-settings #set_allowanceMemo::placeholder {color:#a8a29e!important;opacity:1!important;font-weight:400!important;}
+/* Prefer legible type, compress horizontally only for unusually long sums. */
+#tab-clock .t19-total.hosshii-total-formula {font-size:16px!important;gap:5px!important;}
+#tab-clock .hosshii-total-formula > strong {font-size:16px!important;}
+#tab-clock .hosshii-formula-expression {font-size:16px!important;gap:3px!important;flex:0 0 auto!important;letter-spacing:-.035em!important;}
+#tab-clock .hosshii-formula-expression strong,#tab-clock .hosshii-formula-expression b {font-size:inherit!important;}
+</style>
+
+<script id="hosshii-20261103-additional-fit-fix">
+(function(){
+ function fit(){
+  document.querySelectorAll('.hosshii-total-formula').forEach(function(row){
+   var expr=row.querySelector('.hosshii-formula-expression');
+   var hours=row.querySelector(':scope > strong');
+   if(!expr||!hours)return;
+   expr.style.fontSize='16px';expr.style.transform='none';expr.style.marginRight='0';
+   var available=row.clientWidth-hours.getBoundingClientRect().width-7;
+   if(available<=0)return;
+   var full=expr.scrollWidth;
+   if(full>available){
+    var scale=Math.max(.55,available/full);
+    expr.style.transform='scaleX('+scale+')';
+    expr.style.marginRight=(-(full*(1-scale)))+'px';
+   }
+  });
+ }
+ window.hosshiiFitTotals=fit;
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){requestAnimationFrame(fit)});
+ else requestAnimationFrame(fit);
+ window.addEventListener('resize',fit);
+ var observer=new MutationObserver(function(){requestAnimationFrame(fit)});
+ document.addEventListener('DOMContentLoaded',function(){['itoReceiveTable','t10PrevTable'].forEach(function(id){var e=document.getElementById(id);if(e)observer.observe(e,{childList:true,subtree:true})})});
+})();
+</script>
+</head>
 <body class="flex justify-center p-1 sm:p-2 relative min-h-screen items-center">
 <div id="lineAuthGate" role="dialog" aria-modal="true" aria-labelledby="lineAuthTitle">
   <div id="lineAuthCard">
@@ -6038,24 +6080,6 @@ background:#881337!important;background-color:#881337!important;border-color:#88
 #tab-settings #set_allowanceMemo{height:38px!important;box-sizing:border-box!important;}
 #tab-settings .hosshii-allowance-section-title{font-weight:800!important;}
 </style>
-<script id="hosshii-20261103-fit-totals">
-(function(){
- function fit(){
-  document.querySelectorAll('.hosshii-total-formula').forEach(function(row){
-   var expr=row.querySelector('.hosshii-formula-expression');var hours=row.querySelector(':scope > strong');
-   if(!expr||!hours)return;
-   expr.style.transform='';expr.style.fontSize='14px';expr.style.marginRight='0';
-   var available=row.clientWidth-hours.getBoundingClientRect().width-8;
-   if(available<=0)return;
-   var size=14;
-   while(size>9&&expr.scrollWidth>available){size--;expr.style.fontSize=size+'px';}
-   if(expr.scrollWidth>available){var scale=Math.max(.55,available/expr.scrollWidth);expr.style.transform='scaleX('+scale+')';expr.style.marginRight=(expr.scrollWidth*(scale-1))+'px';}
-  });
- }
- window.hosshiiFitTotals=fit;
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',function(){requestAnimationFrame(fit);});else requestAnimationFrame(fit);
- window.addEventListener('resize',function(){requestAnimationFrame(fit);});
-})();
-</script>
+
 </body>
 </html>
