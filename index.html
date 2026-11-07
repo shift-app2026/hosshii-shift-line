@@ -50,6 +50,14 @@
 #tab-clock .t13-wage-notice button{color:#8b0e33;font-weight:750;text-decoration:underline;text-underline-offset:3px;cursor:pointer;}
 #tab-clock #goalCurrentPay:disabled{opacity:1;}
 </style>
+  <style id="hosshii-job-mode-fix">
+  .hosshii-job-modes{display:grid;grid-template-columns:1fr 1fr;gap:5px;background:#f5f5f4;border-radius:14px;padding:4px}
+  .hosshii-job-modes button{border-radius:10px;padding:7px 3px;font-size:13px;font-weight:700;color:#57534e}
+  .hosshii-job-modes button.selected{background:#fff;color:#881337;box-shadow:0 1px 3px #0002}
+  #hosshiiJobEditRow select{width:100%;border:1px solid #ddd6d3;border-radius:12px;background:#fff;min-height:45px}
+  #settingsJobTabs[hidden],#hosshiiNewJobRow[hidden],#hosshiiJobEditRow[hidden]{display:none!important}
+  #settingsJobTabs button:disabled{opacity:.4}
+  </style>
   <style id="test37-pc-guide-scroll-fix">
   /* PC: prevent the app's flex scroll area from expanding past the card.
      The bottom tab bar remains unchanged, and mobile styles are untouched. */
@@ -1365,6 +1373,27 @@ background:#881337!important;background-color:#881337!important;border-color:#88
 #modalSelectedDateSummaryContent .hosshii-shift-delete {margin-left:auto!important;}
 @media(max-width:370px){#modalSelectedDateSummaryContent .hosshii-shift-time-actions{gap:5px!important;}}
 </style>
+<style id="hosshii-pay-nextmonth-20261105">
+#goalRing .goal-label-text{font-size:clamp(11px,3.15vw,14px)!important;white-space:nowrap;}
+.hosshii-ring-note{font-size:11px;line-height:1.55;color:#78716c;text-align:left;margin:5px 7px 12px;}
+#itoReceiveTable .hc-cols{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr);}
+#itoReceiveTable .hc-cols strong{font-size:clamp(10px,2.8vw,13px);white-space:nowrap;letter-spacing:-.04em;}
+</style>
+<style id="hosshii-shared-preset-layout">
+#shiftInputModal .shift-preset-section .preset-inline-heading.shift-time-heading {
+  font-size:17px!important;line-height:1.35!important;letter-spacing:-.035em!important;
+}
+@media(max-width:375px){
+  #shiftInputModal .shift-preset-section .preset-inline-heading.shift-time-heading {
+    font-size:16px!important;letter-spacing:-.065em!important;
+  }
+}
+/* The existing list is now also available inside the narrower shift dialog. */
+#modalInlinePresetContainer > div {flex-wrap:wrap;row-gap:6px;}
+#modalInlinePresetContainer .job-time {font-size:clamp(15px,4.2vw,18px);font-weight:800;}
+/* Confirmations must remain operable above either preset list. */
+#confirmModal {z-index:13000!important;}
+</style>
 </head>
 <body class="flex justify-center p-1 sm:p-2 relative min-h-screen items-center">
 <div id="lineAuthGate" role="dialog" aria-modal="true" aria-labelledby="lineAuthTitle">
@@ -1494,13 +1523,14 @@ background:#881337!important;background-color:#881337!important;border-color:#88
       <div id="shiftInputScrollArea" class="space-y-3 overflow-y-auto pr-1 flex-1 no-scrollbar" onscroll="updateShiftScrollHint()">
         
         
-        <div class="space-y-2 border-t border-stone-100 pt-2"><div class="flex items-center justify-between"><span class="shift-section-title shift-time-heading">【勤務時間を登録】</span><div class="shift-heading-actions"><span id="modalPaidToggleHeaderSlot"></span><button type="button" onclick="registerNewPresetAndRegister()" id="registerShiftButton" class="px-3 py-1.5 bg-rose-900 text-white rounded-xl text-sm font-bold">登録</button></div></div><div id="modalCustomPresetContainer" class="space-y-2"></div><p class="text-xs font-medium text-stone-600">※有給の場合は「有給」を選択してから登録してね。</p><div id="hosshiiShiftWageWarning" class="t13-wage-notice" hidden>⚠️ 時給が未設定の時間帯があります。<br>設定画面で確認してね♡ <button type="button" onclick="hosshiiOpenWageSettings()">［設定画面］</button></div></div>
-        <div class="space-y-1.5 border-t border-stone-100 pt-2"><span id="modalShiftListHeading" class="shift-section-title">【シフト一覧】</span><div id="modalSelectedDateSummaryContent" class="space-y-2 pt-1"></div></div>
         <section class="shift-preset-section space-y-2 border-t border-stone-100 pt-2">
-          <div class="flex items-center justify-between gap-2"><span class="shift-section-title preset-inline-heading">【ワンタッチ登録しましょ～♡】</span><button type="button" onclick="openPresetRegisterModal()" class="px-3 py-1.5 rounded-xl bg-pink-50 text-rose-900 border border-rose-200 font-bold text-sm shrink-0">＋登録</button></div>
-          <p class="ito-preset-desc font-bold text-stone-600">※よく使う勤務時間を登録して、<br>次回からワンタッチで選べるよ♡</p>
-
+          <div class="flex items-center justify-between gap-2"><span class="shift-section-title preset-inline-heading shift-time-heading">【ワンタッチ登録】</span><button type="button" onclick="openPresetRegisterModal()" class="px-3 py-1.5 rounded-xl bg-pink-50 text-rose-900 border border-rose-200 font-bold text-sm shrink-0">＋登録</button></div>
+          <p class="ito-preset-desc font-bold text-stone-600">※よく使う勤務時間を登録して、<br>　次回からワンタッチで選べるよ♡</p>
+          <div id="modalInlinePresetContainer" class="space-y-2 text-xs"></div>
         </section>
+        <div class="space-y-2 border-t border-stone-100 pt-2"><div class="flex items-center justify-between"><span class="shift-section-title shift-time-heading">【勤務時間を登録】</span><div class="shift-heading-actions"><span id="modalPaidToggleHeaderSlot"></span><button type="button" onclick="registerNewPresetAndRegister()" id="registerShiftButton" class="px-3 py-1.5 bg-rose-900 text-white rounded-xl text-sm font-bold">登録</button></div></div><div id="modalCustomPresetContainer" class="space-y-2"></div><p class="hosshii-paid-entry-note text-xs font-medium text-stone-600">※有給の場合は「有給」を選択してから登録してね。</p><div id="hosshiiShiftWageWarning" class="t13-wage-notice" hidden>⚠️ 時給が未設定の時間帯があります。<br>設定画面で確認してね♡ <button type="button" onclick="hosshiiOpenWageSettings()">［設定画面］</button></div></div>
+        <div class="space-y-1.5 border-t border-stone-100 pt-2"><span id="modalShiftListHeading" class="shift-section-title">【シフト一覧】</span><div id="modalSelectedDateSummaryContent" class="space-y-2 pt-1"></div></div>
+
       </div>
 
       <div id="shiftScrollHint" class="shrink-0 text-center text-[11px] font-bold text-stone-400 py-1 hidden" aria-hidden="true">↓ 下に続きがあります</div>
@@ -1601,7 +1631,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
 <svg id="test7Marble" x="138" y="7" width="24" height="24" viewBox="-12 -12 24 24" overflow="visible" style="display:none"><g filter="url(#t15GlassShadow)"><circle r="10.7" fill="url(#t26PearlGold)" stroke="#fff6da" stroke-width="1.25"/><ellipse cx="-3" cy="-4" rx="3.8" ry="2.7" fill="#fff" opacity=".93"/><path d="M -7 2.2 Q 0 9 7 1.4" fill="none" stroke="#f6fcd5" stroke-opacity=".65" stroke-width="1"/></g></svg>
 </svg>
               <div class="absolute inset-0 flex flex-col items-center justify-center text-center t10-center">
-                <span class="goal-label-text">今月のお給料見込額</span>
+                <span class="goal-label-text">来月のお給料見込額</span>
                 <button type="button" id="goalCurrentPay" onclick="switchTab('settings')" aria-label="時給設定画面へ移動" disabled>0円</button>
                 <div class="test7-divider"></div>
                 <span class="t10-remaining-label">目標まで</span>
@@ -1615,11 +1645,13 @@ background:#881337!important;background-color:#881337!important;border-color:#88
 
         </div>
 
+        <p class="hosshii-ring-note">※この円グラフは、各バイト先の締め日に合わせて<br>　<span class="hosshii-note-keep">計算したお給料見込額</span>の合計を表しています。</p>
+
         <div class="hosshii-monthly-detail-card bg-gradient-to-br from-rose-50/60 via-rose-50/30 to-amber-50/40 text-stone-900 p-4 rounded-2xl border border-rose-100 shadow-[0_1px_2px_rgba(0,0,0,0.05)] space-y-2.5">
           <div class="text-sm font-bold text-rose-950 border-b border-rose-200/60 pb-2 flex justify-between items-center tracking-wide">
-            <span id="monthlyReceiveTitle">【今月・前月の内訳】</span>
+            <span id="monthlyReceiveTitle">【来月・今月のお給料内訳】</span>
           </div>
-          <div id="itoReceiveTable" class="ito-receive-table" aria-label="今月の締め分の勤務時間とお給料見込額"></div>
+          <div id="itoReceiveTable" class="ito-receive-table" aria-label="来月と今月の入金予定に対応する勤務時間とお給料見込額"></div>
           <div id="test5RingWarning" class="t13-wage-notice" hidden>⚠️ 時給が設定されていない時間帯があります。<br>シフト登録画面にお戻りください♡ <button type="button" onclick="hosshiiOpenMissingShift()">［登録画面］</button></div>
         </div>
         <section class="t10-prev-card" hidden aria-hidden="true">
@@ -1650,7 +1682,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
               <span id="itoWallRemainingLabel">130万円までの残り</span>
               <strong id="itoWallRemainingAmount">0円</strong>
             </div>
-            <p class="ito-wall-note">※登録済みシフトから計算した税金・社会保険料控除前の見込額です。選択肢は比較用の参考金額で、現在の税・社会保険制度上の適用基準を示すものではありません。条件は「見てね♡」から確認してね。</p>
+            <p class="ito-wall-note">※登録済みシフトから計算した税金・社会保険料控除前の見込額です。選択肢は比較用の参考金額で、現在の税・社会保険制度上の適用基準を示すものではありません。<span class="ito-wall-note-condition">条件は「見てね♡」から確認してね。</span><span class="ito-wall-note-law">※法律や制度の改正に伴い、表示内容や参考金額を変更する場合があります。</span></p>
           </div>
         </div>
       </div>
@@ -1673,6 +1705,11 @@ background:#881337!important;background-color:#881337!important;border-color:#88
             <span class="text-rose-500">日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span class="text-sky-600">土</span>
           </div>
           <div id="calendarDays" class="grid grid-cols-7 gap-1 text-center text-sm"></div>
+        </div>
+
+        <div class="calendar-registration-prompt flex items-center gap-2">
+          <p class="flex-1 min-w-0 text-xs text-stone-600 leading-relaxed">※カレンダーで日付を選んでから、<br>「＋シフトを登録する」を押してね♡</p>
+          <button type="button" id="calendarRegisterButton" onclick="openSelectedCalendarShift()" class="shrink-0 py-2.5 px-3 rounded-xl bg-rose-900 text-rose-50 hover:bg-rose-800 font-bold text-sm shadow-sm whitespace-nowrap">＋シフトを登録</button>
         </div>
 
         <div class="bg-white border border-rose-200 rounded-3xl px-3.5 py-2 shadow-sm space-y-2">
@@ -1729,14 +1766,16 @@ background:#881337!important;background-color:#881337!important;border-color:#88
         <div class="bg-white p-4 rounded-2xl border border-stone-100 shadow-sm space-y-3">
           <div class="space-y-2">
             <div class="hosshii-register-heading">
-              <label for="newJobNameInput" class="ito-job-register-label">【バイト先登録】</label>
+              <label for="newJobNameInput" class="ito-job-register-label">【バイト名の登録＆変更】</label>
               <span id="hosshiiRegisteredJobCount" class="hosshii-register-limit"></span>
             </div>
+            <div class="hosshii-job-modes"><button id="hosshiiModeNew" type="button" onclick="setHosshiiJobMode(false)">新規登録</button><button id="hosshiiModeEdit" type="button" onclick="setHosshiiJobMode(true)">修正＆削除</button></div>
             <div class="hosshii-register-controls">
-              <div class="hosshii-register-input-wrap">
-                <input id="newJobNameInput" type="text" maxlength="6" placeholder="例：ほっしー" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();registerNewJob();}">
+              <div id="hosshiiNewJobRow" class="hosshii-register-input-wrap">
+                <span class="hosshii-input-with-drop"><input id="newJobNameInput" type="text" maxlength="6" placeholder="例：ほっしー" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();registerNewJob();}"><button type="button" id="hosshiiJobDropBtn" class="hosshii-job-drop" aria-label="登録済みのバイト先を選ぶ" onclick="hosshiiOpenJobPicker()" hidden>▼</button></span>
                 <button type="button" onclick="registerNewJob()" class="ito-job-register-button">登録</button>
               </div>
+              <div id="hosshiiJobEditRow" class="hosshii-register-input-wrap" hidden><select id="hosshiiJobEditSelect" aria-label="修正・削除するバイト先" onchange="hosshiiJobSelectChanged(this)"></select></div>
               <div id="settingsJobTabs" class="hosshii-register-actions"></div>
             </div>
             <div class="friend-job-hint hosshii-register-count"><span>※6文字以内で3件まで登録できます。</span></div>
@@ -1746,7 +1785,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
 
           <div class="pt-2.5 border-t border-stone-200 space-y-2">
             <div class="text-base font-bold text-stone-800">【データのバックアップ】</div>
-            <p class="oct23-backup-note note-fit text-xs text-stone-500 font-bold leading-relaxed">※LINEで本人確認して、データをクラウドに保存・復元できます♡</p>
+            <p class="oct23-backup-note note-fit text-xs text-stone-500 font-bold leading-relaxed">※LINEで本人確認して、データを<br>　クラウドに保存・復元できます♡</p>
             <div class="flex space-x-2">
               <button type="button" onclick="hosshiiCloudBackupSave(event)" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-900 font-bold py-3 rounded-xl text-xs sm:text-sm transition border border-rose-200 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">⬇️ 書き出す</button>
               <button type="button" onclick="hosshiiCloudBackupLoad(event)" class="flex-1 bg-rose-50 hover:bg-rose-100 text-rose-900 font-bold py-3 rounded-xl text-xs sm:text-sm transition border border-rose-200 shadow-[0_1px_2px_rgba(0,0,0,0.05)]">⬆ 読み込む</button>
@@ -1887,7 +1926,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
 
     function buildConfigData(savedWages) {
       return {
-        jobCount: savedWages.jobCount !== undefined ? Number(savedWages.jobCount) : 1,
+        jobCount: savedWages.jobCount !== undefined ? Number(savedWages.jobCount) : 0,
         job1: createDefaultJobConfig(savedWages.job1, '', defaultPresets1, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', '', ''),
         job2: createDefaultJobConfig(savedWages.job2, '', defaultPresets1, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', '', ''),
         job3: createDefaultJobConfig(savedWages.job3, '', defaultPresets1, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', '', '')
@@ -1946,8 +1985,8 @@ background:#881337!important;background-color:#881337!important;border-color:#88
 
       return {
         name: savedJob?.name !== undefined ? savedJob.name : defName,
-        closeDay: normDay(savedJob?.closeDay, '20'),
-        payDay: normDay(savedJob?.payDay, '5'),
+        closeDay: savedJob?.closeDay ? normDay(savedJob.closeDay, '') : '',
+        payDay: savedJob?.payDay ? normDay(savedJob.payDay, '') : '',
         paid: numOr(savedJob?.paid, defPaid),
         paidHours: Number(savedJob?.paidHours) || 0,
         wageSlots: wageSlots,
@@ -1964,6 +2003,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
     }
 
     window.onload = function() {
+      // 未登録枠に残るデータは自動削除せず保護する。
       // 新しく起動したときは「お給料」画面を表示
       switchTab('clock');
       renderSettingsJobTabs();
@@ -2158,6 +2198,11 @@ background:#881337!important;background-color:#881337!important;border-color:#88
       hint.classList.toggle('hidden', !canScroll || atBottom);
     }
 
+    function openSelectedCalendarShift() {
+      const dateStr = calSelectedDateStr || formatDateKey(new Date());
+      openShiftInputModal(dateStr, true);
+    }
+
     let shiftOpenedFromCalendar = false;
     function openShiftInputModal(dateStr, fromCalendar = false) {
       // 期限切れ中も登録済みシフトを閲覧できるよう画面を開く。
@@ -2188,6 +2233,11 @@ background:#881337!important;background-color:#881337!important;border-color:#88
       document.getElementById('breakSelectModal')?.classList.add('hidden');
       const modal = document.getElementById('shiftInputModal');
       if (modal) modal.classList.add('hidden');
+      if (shiftOpenedFromCalendar && selectedCalendarDateStr) {
+        const date = parseDateKey(selectedCalendarDateStr);
+        calSelectedDateStr = selectedCalendarDateStr;
+        currentPeriodDate = new Date(date.getFullYear(), date.getMonth(), 1);
+      }
       refreshAll();
     }
 
@@ -2207,7 +2257,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
       const keys=getActiveJobKeys();
       const modalJobDotColor = currentSelectedJobKey === 'job1' ? '#2875E7' : currentSelectedJobKey === 'job2' ? '#488E37' : '#B97461';
       const modalJobTint = currentSelectedJobKey === 'job1' ? '#edf5ff' : currentSelectedJobKey === 'job2' ? '#edf8ed' : '#fff4ee';
-      container.innerHTML=`<div class="friend-modal-job-choice" style="background:${modalJobTint};border-color:${modalJobDotColor}55"><span class="modal-job-color-dot" style="background:${modalJobDotColor}" aria-hidden="true"></span><select aria-label="バイト先を選択" onchange="switchModalJobTab(this.value)">${keys.map(jk=>`<option value="${jk}" ${jk===currentSelectedJobKey?'selected':''}>${(configData[jk]?.name||jk).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</option>`).join('')}</select></div>`;
+      container.innerHTML=`<div class="friend-modal-job-choice" style="background:${modalJobTint};border-color:${modalJobDotColor}55"><span class="modal-job-color-dot" style="background:${modalJobDotColor}" aria-hidden="true"></span><button type="button" class="modal-job-trigger${keys.length>1?'':' single'}" aria-label="バイト先を選択" ${keys.length>1?'onclick="hosshiiOpenModalJobMenu(this)"':''}><span class="modal-job-trigger-name">${String(configData[currentSelectedJobKey]?.name||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</span>${keys.length>1?'<span class="modal-job-trigger-arrow">⌄</span>':''}</button></div>`;
       const warnEl=document.getElementById('modalWageWarn');if(warnEl){const noWage=!jobHasWage(currentSelectedJobKey);warnEl.classList.toggle('hidden',!noWage);if(noWage)warnEl.textContent='⚠️ このバイト先は時給が未設定です。設定タブで時給を入力してね♡';}
     }
 
@@ -2218,7 +2268,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
     function renameJobPrompt(jk) {
       renamingJobKey = jk;
       const input = document.getElementById('renameJobInput');
-      const placeholderName = jk === 'job1' ? 'バイト名1' : (jk === 'job2' ? 'バイト名2' : 'バイト名3');
+      const placeholderName = '例：ほっしー';
       input.placeholder = placeholderName;
       const curName = configData[jk] && configData[jk].name;
       input.value = (curName && curName !== 'バイト') ? curName : '';
@@ -2272,6 +2322,9 @@ background:#881337!important;background-color:#881337!important;border-color:#88
         return;
       }
 
+      if (getActiveJobKeys().some(k => k !== jk && configData[k]?.name === newName)) {
+        showAlertModal('同じ名前のバイト先はすでに登録されています。'); return;
+      }
       const previousConfig = JSON.parse(JSON.stringify(configData));
       const previousSettingsJobKey = currentSettingsJobKey;
       const previousJobCount = configData.jobCount;
@@ -2288,7 +2341,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
         }
 
         // データ保存だけをこの try で判定し、画面更新のエラーと区別する
-        saveAllDataStorage();
+        if (!saveAllDataStorage()) throw new Error("保存処理が完了しませんでした");
       } catch (error) {
         configData = previousConfig;
         currentSettingsJobKey = previousSettingsJobKey;
@@ -2317,6 +2370,49 @@ background:#881337!important;background-color:#881337!important;border-color:#88
         showAlertModal(`バイト先名は保存されましたが、画面更新でエラーが発生しました（${detail}）。ページを再読み込みして名前をご確認ください。`);
       }
     }
+
+    // バイト先の切り替え用プルダウン（ボタンのすぐ下に小さく開く）
+    (function(){
+      let menu = null, cleanup = null;
+      function close() { if (menu) { menu.remove(); menu = null; } if (cleanup) { cleanup(); cleanup = null; } }
+      window.hosshiiCloseJobMenu = close;
+      window.hosshiiOpenJobMenu = function(trigger, keys, selectedKey, onPick) {
+        if (menu) { const same = menu._trigger === trigger; close(); if (same) return; }
+        const m = document.createElement('div');
+        m.id = 'hosshiiJobMenu'; m.setAttribute('role', 'listbox'); m._trigger = trigger;
+        keys.forEach(k => {
+          const b = document.createElement('button');
+          b.type = 'button'; b.setAttribute('role', 'option');
+          b.className = 'hosshii-job-menu-item' + (k === selectedKey ? ' selected' : '');
+          b.style.setProperty('--chip', getJobPalette(k).dot);
+          b.textContent = String(configData[k]?.name || 'バイト先');
+          b.addEventListener('click', () => { close(); if (k !== selectedKey) onPick(k); });
+          m.appendChild(b);
+        });
+        document.body.appendChild(m);
+        const r = trigger.getBoundingClientRect();
+        m.style.minWidth = Math.max(r.width, 150) + 'px';
+        const left = Math.max(8, Math.min(r.left, window.innerWidth - m.offsetWidth - 8));
+        m.style.left = left + 'px';
+        m.style.top = (r.bottom + 4) + 'px';
+        menu = m;
+        const onDown = e => { if (!m.contains(e.target) && !trigger.contains(e.target)) close(); };
+        const onKey = e => { if (e.key === 'Escape') close(); };
+        document.addEventListener('pointerdown', onDown, true);
+        document.addEventListener('keydown', onKey, true);
+        document.addEventListener('scroll', close, true);
+        window.addEventListener('resize', close);
+        cleanup = () => {
+          document.removeEventListener('pointerdown', onDown, true);
+          document.removeEventListener('keydown', onKey, true);
+          document.removeEventListener('scroll', close, true);
+          window.removeEventListener('resize', close);
+        };
+      };
+      window.hosshiiOpenModalJobMenu = function(btn) {
+        hosshiiOpenJobMenu(btn, getActiveJobKeys(), currentSelectedJobKey, k => switchModalJobTab(k));
+      };
+    })();
 
     function switchModalJobTab(jobKey) {
       currentSelectedJobKey = jobKey;
@@ -2438,12 +2534,15 @@ background:#881337!important;background-color:#881337!important;border-color:#88
       });
     }
 
+    // 名前のない（未登録の）バイト先枠に残っているシフトを消す
+    function hosshiiPurgeOrphanShifts() {
+      // 旧版との互換用。シフトの自動削除はデータ損失の原因になるため無効化。
+      return false;
+    }
+
     function getActiveJobKeys() {
-      let count = Number(configData.jobCount) || 1;
-      let keys = ['job1'];
-      if (count >= 2) keys.push('job2');
-      if (count >= 3) keys.push('job3');
-      return keys;
+      // Names determine registration. Never create a phantom job when count is zero.
+      return ['job1','job2','job3'].filter(k => Boolean(String(configData[k]?.name || '').trim()));
     }
 
     function getFirstActiveJobKey() {
@@ -2494,6 +2593,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
     }
 
     function switchTab(tabName) {
+      cancelSalaryMarbleReplay();
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.tab-btn').forEach(el => {
         el.classList.remove('active');
@@ -2517,6 +2617,9 @@ background:#881337!important;background-color:#881337!important;border-color:#88
 
       if (typeof updateItoStickyHeader === 'function') updateItoStickyHeader(tabName);
       if (window.hosshiiReadOnly && typeof hosshiiSyncExpiredUI === 'function') hosshiiSyncExpiredUI();
+      if (tabName === 'calendar') {
+        try { renderCalendar(); } catch (e) {}
+      }
       if (tabName === 'list') {
         renderStandaloneShiftList('jump');
       }
@@ -2524,6 +2627,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
       // 登録済みシフトには触れず、時給未設定時の警告・勤務時間も再描画する。
       if (tabName === 'clock') {
         initOverviewPage();
+        requestSalaryMarbleReplay();
       }
     }
 
@@ -2756,6 +2860,25 @@ background:#881337!important;background-color:#881337!important;border-color:#88
         <p class="text-xs text-stone-500 font-medium leading-relaxed pt-1">※1日8時間を超えた分の割増は、自動では計算されません。22時以降は、設定した時間帯の時給が反映されます。</p>`;
     }
 
+    function hosshiiJobSelectChanged(sel) {
+      if (sel.value === '__new__') {
+        setHosshiiJobMode(false);
+        setTimeout(() => document.getElementById('newJobNameInput')?.focus(), 30);
+        return;
+      }
+      window.hosshiiEditSelectedKey = sel.value;
+    }
+    function hosshiiOpenJobPicker() {
+      if (!getActiveJobKeys().length) return;
+      setHosshiiJobMode(true);
+      const sel = document.getElementById('hosshiiJobEditSelect');
+      if (!sel) return;
+      try { sel.focus(); if (typeof sel.showPicker === 'function') sel.showPicker(); } catch (e) {}
+    }
+    function setHosshiiJobMode(edit) {
+      window.hosshiiJobEditMode = Boolean(edit);
+      renderSettingsJobTabs();
+    }
     function renderSettingsJobTabs() {
       const container = document.getElementById('settingsJobTabs');
       if (!container) return;
@@ -2775,25 +2898,54 @@ background:#881337!important;background-color:#881337!important;border-color:#88
         const mark = document.createElement('span');
         mark.className = 'hosshii-settings-job-dot';
         mark.style.backgroundColor = dot;
-        const selector = document.createElement('select');
-        selector.className = 'hosshii-settings-pinned-select';
-        selector.setAttribute('aria-label', '時給を設定するバイト先を選択');
-        keys.forEach(key => {
-          const option = document.createElement('option');
-          option.value = key;
-          option.textContent = String(configData[key]?.name || 'バイト先');
-          option.selected = key === jk;
-          selector.appendChild(option);
-        });
-        selector.addEventListener('change', () => switchSettingsJobTab(selector.value));
-        const suffix = document.createElement('span');
-        suffix.textContent = 'の時給を設定中';
-        pinnedJob.append(mark, selector, suffix);
+        if (!keys.length) {
+          const none = document.createElement('span');
+          none.textContent = 'バイト先を登録してね♡';
+          pinnedJob.append(none);
+        } else {
+          const trigger = document.createElement('button');
+          trigger.type = 'button';
+          trigger.className = 'hosshii-pinned-trigger' + (keys.length > 1 ? '' : ' single');
+          const dotEl = document.createElement('span');
+          dotEl.className = 'hosshii-pinned-trigger-dot';
+          dotEl.style.background = dot;
+          const nameEl = document.createElement('span');
+          nameEl.className = 'hosshii-pinned-trigger-name';
+          nameEl.textContent = String(configData[jk]?.name || 'バイト先');
+          trigger.append(dotEl, nameEl);
+          if (keys.length > 1) {
+            const arrow = document.createElement('span');
+            arrow.className = 'hosshii-pinned-trigger-arrow';
+            arrow.textContent = '⌄';
+            trigger.append(arrow);
+            trigger.addEventListener('click', () => hosshiiOpenJobMenu(trigger, keys, jk, k => switchSettingsJobTab(k)));
+          }
+          const suffix = document.createElement('span');
+          suffix.textContent = 'の時給を設定中';
+          pinnedJob.append(trigger, suffix);
+        }
       }
+      if (!keys.length) window.hosshiiJobEditMode = false;
+      const editMode = window.hosshiiJobEditMode === true;
+      const dropBtn = document.getElementById('hosshiiJobDropBtn');
+      if (dropBtn) dropBtn.hidden = !keys.length;
+      const row = document.getElementById('hosshiiJobEditRow');
+      if (row) row.hidden = !editMode;
+      const select = document.getElementById('hosshiiJobEditSelect');
+      if (select) {
+        select.innerHTML = '<option value="__new__">＋ 新しく登録する</option>' + keys.map(k => `<option value="${k}">${esc(configData[k].name)}</option>`).join('');
+        if (!keys.includes(window.hosshiiEditSelectedKey)) window.hosshiiEditSelectedKey = keys[0] || '';
+        select.value = window.hosshiiEditSelectedKey || '__new__';
+      }
+      const newRow = document.getElementById('hosshiiNewJobRow');
+      if (newRow) newRow.hidden = editMode;
+      document.getElementById('hosshiiModeNew')?.classList.toggle('selected', !editMode);
+      document.getElementById('hosshiiModeEdit')?.classList.toggle('selected', editMode);
       container.innerHTML = `<div class="hosshii-register-action-row">
-        <button type="button" class="hosshii-register-action" onclick="renameJobPrompt(currentSettingsJobKey)">修正</button>
-        <button type="button" class="hosshii-register-action" onclick="deleteJob(currentSettingsJobKey)">削除</button>
+        <button type="button" class="hosshii-register-action" ${!keys.length?'disabled':''} onclick="renameJobPrompt(document.getElementById('hosshiiJobEditSelect').value)">修正</button>
+        <button type="button" class="hosshii-register-action" ${!keys.length?'disabled':''} onclick="deleteJob(document.getElementById('hosshiiJobEditSelect').value)">削除</button>
       </div>`;
+      container.hidden = !editMode;
     }
 
     function registerNewJob() {
@@ -2806,22 +2958,23 @@ background:#881337!important;background-color:#881337!important;border-color:#88
       if (activeKeys.some(jk => configData[jk]?.name === name)) {
         showAlertModal('同じ名前のバイト先はすでに登録されています。'); return;
       }
-      let targetKey = activeKeys.find(jk => !configData[jk]?.name);
-      const nextCount = targetKey ? null : activeKeys.length + 1;
+      let targetKey = ['job1','job2','job3'].find(jk => !configData[jk]?.name);
+      const nextCount = activeKeys.length + 1;
       if (!targetKey && activeKeys.length >= 3) {
         showAlertModal('登録できるバイト先は3件までです。\n不要なバイト先を削除してから登録してね♡'); return;
       }
-      if (!targetKey) targetKey = 'job' + nextCount;
+      if (!targetKey) { showAlertModal('登録できるバイト先は3件までです。'); return; }
       syncSettingsFormToConfig(currentSettingsJobKey);
       const oldConfig = JSON.parse(JSON.stringify(configData));
       const oldSettingsKey = currentSettingsJobKey;
       try {
+        // 過去の未登録枠データは自動削除しない。
         configData[targetKey] = createEmptyJobConfig();
         configData[targetKey].name = name;
-        if (nextCount) configData.jobCount = nextCount;
+        configData.jobCount = nextCount;
         currentSettingsJobKey = targetKey;
         currentSelectedJobKey = targetKey;
-        saveAllDataStorage();
+        if (!saveAllDataStorage()) throw new Error('登録内容を保存できませんでした');
       } catch (err) {
         configData = oldConfig;
         currentSettingsJobKey = oldSettingsKey;
@@ -2843,48 +2996,57 @@ background:#881337!important;background-color:#881337!important;border-color:#88
 
     function deleteJob(jk) {
       if (hosshiiBlockEdit()) return false;
-      const keys = getActiveJobKeys();
-      const idx = keys.indexOf(jk);
-      if (idx === -1) return;
-      if (keys.length <= 1) {
-        askConfirm('バイト名をクリアしますか？\nこのバイト先のシフト・設定もすべて削除されます。', () => {
-          configData[jk] = createEmptyJobConfig();
-          removeJobShifts(jk);
-          renderSettingsJobTabs();
-          renderSettingsJobContent(currentSettingsJobKey);
-          saveAllDataStorage();
-          refreshAll();
-          showToast('バイト名をクリアしました');
-        });
-        return;
-      }
-      const name = getJobDisplayName(jk);
+      if (!getActiveJobKeys().includes(jk)) { showAlertModal('登録済みのバイト先を選択してね♡'); return; }
+      const name = configData[jk].name;
       askConfirm(`「${name}」を削除しますか？\nこのバイト先のシフト・設定もすべて削除されます。`, () => {
-        syncSettingsFormToConfig(currentSettingsJobKey);
-
-        for (const dateKey of Object.keys(shiftsData)) {
-          const day = shiftsData[dateKey];
-          for (let i = idx; i < keys.length; i++) {
-            const nextKey = keys[i + 1];
-            if (nextKey && day[nextKey]) day[keys[i]] = day[nextKey];
-            else delete day[keys[i]];
+        // Confirm that the target still exists. Never shift other jobs' keys or data.
+        if (configData[jk]?.name !== name) { showAlertModal('登録内容が変わりました。もう一度選択してね。'); return; }
+        const previousConfig = JSON.parse(JSON.stringify(configData));
+        const previousShifts = JSON.parse(JSON.stringify(shiftsData));
+        const shiftKey = 'mybasket_shifts_v23';
+        const wagesKey = 'mybasket_wages_v77';
+        let rawShifts, rawWages;
+        try {
+          rawShifts = localStorage.getItem(shiftKey);
+          rawWages = localStorage.getItem(wagesKey);
+        } catch (error) {
+          showStorageSafetyWarning(); return;
+        }
+        configData[jk] = createEmptyJobConfig();
+        for (const dk of Object.keys(shiftsData)) {
+          if (shiftsData[dk]) {
+            delete shiftsData[dk][jk];
+            if (!Object.keys(shiftsData[dk]).length) delete shiftsData[dk];
           }
-          if (Object.keys(day).length === 0) delete shiftsData[dateKey];
         }
-        for (let i = idx; i < keys.length - 1; i++) {
-          configData[keys[i]] = configData[keys[i + 1]];
+        configData.jobCount = getActiveJobKeys().length;
+        const shiftsSaved = safeWriteAppJSON(shiftKey, shiftsData);
+        const wagesSaved = shiftsSaved && saveAllDataStorage();
+        if (!shiftsSaved || !wagesSaved) {
+          configData = previousConfig;
+          shiftsData = previousShifts;
+          try {
+            if (rawShifts === null) localStorage.removeItem(shiftKey);
+            else localStorage.setItem(shiftKey, rawShifts);
+            if (rawWages === null) localStorage.removeItem(wagesKey);
+            else localStorage.setItem(wagesKey, rawWages);
+          } catch (restoreError) {
+            console.error('削除失敗時の復元に失敗:', restoreError);
+            storageWriteBlocked = true;
+            showStorageSafetyWarning();
+          }
+          showAlertModal('保存できなかったため、削除を取り消しました。'); return;
         }
-        const lastKey = keys[keys.length - 1];
-        configData[lastKey] = createEmptyJobConfig();
-
-        configData.jobCount = keys.length - 1;
-        if (!safeWriteAppJSON('mybasket_shifts_v23', shiftsData)) return;
-
-        ensureValidSelectedJob();
-        renderSettingsJobTabs();
-        renderSettingsJobContent(currentSettingsJobKey);
-        saveAllDataStorage();
-        refreshAll();
+        window.hosshiiEditSelectedKey = '';
+        document.getElementById('newJobNameInput').value = '';
+        currentSettingsJobKey = getFirstActiveJobKey();
+        currentSelectedJobKey = getFirstActiveJobKey();
+        renderSettingsJobTabs(); renderSettingsJobContent(currentSettingsJobKey);
+        renderModalJobTabs(); refreshAll();
+        try {
+          const activeTab = document.querySelector('#appScroll > .tab-content:not(.hidden)');
+          if (activeTab && typeof window.updateItoStickyHeader === 'function') window.updateItoStickyHeader(activeTab.id.replace(/^tab-/, ''));
+        } catch (e) {}
         showToast(`「${name}」を削除しました`);
       });
     }
@@ -2903,7 +3065,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
       loadSettingsToUIForTab(jk);
     }
 
-    const DAY_OPTIONS = Array.from({ length: 28 }, (_, i) => `<option value="${i + 1}">${i + 1}日</option>`).join('') + '<option value="月末">月末</option>';
+    const DAY_OPTIONS = '<option value="">未設定</option>' + Array.from({ length: 28 }, (_, i) => `<option value="${i + 1}">${i + 1}日</option>`).join('') + '<option value="月末">月末</option>';
 
     function getSettingsFormHtml(jk) {
       const j = configData[jk];
@@ -2951,7 +3113,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
                   <span class="hosshii-allowance-section-title flex-1 min-w-0 whitespace-nowrap">【有給休暇】<span class="paid-sub ml-1.5 text-stone-500 font-bold">1時間あたり</span></span>
                   <div class="flex items-center gap-1 shrink-0"><input type="text" inputmode="numeric" id="set_wagePaid" oninput="formatInputNumber(this)" class="w-24 p-2 border rounded text-right font-bold bg-white text-sm"><span class="font-bold">円</span></div>
                 </div>
-                <p class="paid-note text-xs text-stone-500 font-medium text-left">※時給が異なる場合は、<br>よく働く時給か平均時給を入力してね♡</p>
+                <p class="paid-note text-xs text-stone-500 font-medium text-left">※時給が異なる場合は、<br>　よく働く時給か平均時給を入力してね♡</p>
 
               </div>
             </div>
@@ -3216,8 +3378,8 @@ background:#881337!important;background-color:#881337!important;border-color:#88
       const j = configData[jk];
       if (!document.getElementById('set_closeDay')) return;
 
-      document.getElementById('set_closeDay').value = j.closeDay || '20';
-      document.getElementById('set_payDay').value = j.payDay || '5';
+      document.getElementById('set_closeDay').value = j.closeDay || '';
+      document.getElementById('set_payDay').value = j.payDay || '';
       document.getElementById('set_wagePaid').value = j.paid ? j.paid.toLocaleString() : '';
       
 
@@ -3234,8 +3396,8 @@ background:#881337!important;background-color:#881337!important;border-color:#88
       const getVal = id => document.getElementById(id)?.value || '';
       const getNum = id => parseFormattedNumber(getVal(id));
 
-      j.closeDay = getVal('set_closeDay') || '20';
-      j.payDay = getVal('set_payDay') || '5';
+      j.closeDay = getVal('set_closeDay');
+      j.payDay = getVal('set_payDay');
       j.paid = getNum('set_wagePaid');
       // 旧有給時間は既存データの互換性のため保持
 
@@ -3285,9 +3447,9 @@ background:#881337!important;background-color:#881337!important;border-color:#88
     }
 
     function renderModalPresetButtons() {
-      const container = document.getElementById('modalPresetContainer');
-      if (!container) return;
-      container.innerHTML = '';
+      const containers = ['modalPresetContainer', 'modalInlinePresetContainer']
+        .map(id => document.getElementById(id)).filter(Boolean);
+      let html = '';
 
       const currentJob = configData[currentSelectedJobKey] || configData.job1;
       const presets = currentJob.presets || [];
@@ -3298,7 +3460,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
         if (p.start && p.end) {
           const breakMins = Number(p.breakMins) || 0;
 
-          container.innerHTML += `
+          html += `
             <div class="bg-white border border-stone-200 py-2.5 px-3 rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-2 text-xs sm:text-sm">
               <span class="font-bold text-stone-800 job-time">${p.start} ～ ${p.end}</span>
               ${breakMins > 0 ? `<span class="font-bold text-stone-600 whitespace-nowrap">休憩${breakMins}分</span>` : ''}
@@ -3312,16 +3474,21 @@ background:#881337!important;background-color:#881337!important;border-color:#88
           `;
         }
       });
-      if (!container.innerHTML.trim()) {
-        container.innerHTML = '<div class="text-stone-400 font-bold">「ワンタッチ時間登録」から追加できます</div>';
+      if (!html.trim()) {
+        html = '<div class="text-stone-400 font-bold">「ワンタッチ時間登録」から追加できます</div>';
       }
+      containers.forEach(container => { container.innerHTML = html; });
+      requestAnimationFrame(updateShiftScrollHint);
     }
 
 
     function registerFromPresetList(start,end,breakMins) {
       if (hosshiiBlockEdit()) return false;
       const ok = registerModalPresetTime(start,end,breakMins);
-      if(ok) closePresetRegisterModal();
+      if(ok) {
+        closePresetRegisterModal();
+        if (shiftOpenedFromCalendar) closeShiftInputModal();
+      }
     }
     function deleteModalPresetRow(idx) {
       if (hosshiiBlockEdit()) return false;
@@ -3474,6 +3641,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
       newPresetForm = { start: '00:00', end: '00:00', breakMins: 0 };
       setModalShiftTypeUIOnly(false);
       renderModalCustomPresets();
+      if (shiftOpenedFromCalendar) closeShiftInputModal();
     }
 
     function updateNewPresetForm() {
@@ -3639,54 +3807,108 @@ background:#881337!important;background-color:#881337!important;border-color:#88
       test7AnimateMarble(Math.max(0, Math.min(rawPercent, 100)), !missingWage && monthlyGoal > 0);
     }
 
-    // テスト⑦：ビー玉は輪の幅の中央を移動。初回は0%から、以降は前回位置から滑らかに移動。
+    // Animation state is presentation-only; the existing salary calculation supplies the target.
     let test7MarblePercent = 0;
     let test7MarbleFrame = 0;
-    let test7MarbleStarted = false;
-    function test7AnimateMarble(target, enabled) {
-      const progress = document.getElementById('goalProgressCircle');
-      const marble = document.getElementById('test7Marble');
-      if (!progress || !marble) return;
-      cancelAnimationFrame(test7MarbleFrame);
-      if (!enabled) {
-        test7MarblePercent = 0;
-        test7MarbleStarted = false;
-        progress.setAttribute('stroke-dasharray', '0 100');
-        progress.style.visibility = 'hidden';
-        marble.style.display = 'none';
-        return;
-      }
-      marble.style.display = '';
-      progress.style.visibility = 'hidden'; // ㉖: 輪の色は固定し、目盛りとビー玉で進捗を表現
-      const start = test7MarbleStarted ? test7MarblePercent : 0;
-      if (test7MarbleStarted && Math.abs(start - target) < .001) {
-        progress.setAttribute('stroke-dasharray', `${target} ${100-target}`);
-        return;
-      }
-      test7MarbleStarted = true;
-      const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const duration = reduceMotion ? 0 : 1400;
-      const startTime = performance.now();
-      function paint(value) {
-        progress.style.visibility = 'hidden';
-        progress.setAttribute('stroke-dasharray', value <= 0.001 ? '0 100' : `${value} ${100 - value}`);
-        // ㉖: 12時を0%として時計回り。ビー玉の中心は輪の幅の中央（半径131）を走る。
-        const angle = (-90 + value * 3.6) * Math.PI / 180;
-        const x = 150 + 131 * Math.cos(angle);
-        const y = 150 + 131 * Math.sin(angle);
-        // ネストしたSVGの座標を直接動かす。CSS transformとの競合で左上に飛ぶのを防止。
-        marble.setAttribute('x', (x - 12).toFixed(3));
-        marble.setAttribute('y', (y - 12).toFixed(3));
-        test7MarblePercent = value;
-      }
-      function tick(now) {
-        const t = duration ? Math.min(1, (now - startTime) / duration) : 1;
-        const ease = 1 - Math.pow(1 - t, 3);
-        paint(start + (target - start) * ease);
-        if (t < 1) test7MarbleFrame = requestAnimationFrame(tick);
-      }
-      test7MarbleFrame = requestAnimationFrame(tick);
+    let salaryMarbleTimer = 0;
+    let salaryMarbleGeneration = 0;
+    let salaryMarbleTarget = 0;
+    let salaryMarbleEnabled = false;
+    let salaryMarbleState = 'idle';
+    const salaryMarbleMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    function salaryMarbleIsVisible() {
+      const tab = document.getElementById('tab-clock');
+      const gate = document.getElementById('lineAuthGate');
+      return document.visibilityState === 'visible' && tab && !tab.classList.contains('hidden')
+        && (!gate || gate.hidden) && tab.getClientRects().length > 0;
     }
+
+    function paintSalaryMarble(value) {
+      const marble = document.getElementById('test7Marble');
+      const progress = document.getElementById('goalProgressCircle');
+      if (!marble || !progress) return;
+      progress.style.visibility = 'hidden';
+      progress.setAttribute('stroke-dasharray', `${value} ${100 - value}`);
+      const angle = (-90 + value * 3.6) * Math.PI / 180;
+      marble.setAttribute('x', (150 + 131 * Math.cos(angle) - 12).toFixed(3));
+      marble.setAttribute('y', (150 + 131 * Math.sin(angle) - 12).toFixed(3));
+      test7MarblePercent = value;
+    }
+
+    function cancelSalaryMarbleReplay() {
+      ++salaryMarbleGeneration;
+      clearTimeout(salaryMarbleTimer);
+      cancelAnimationFrame(test7MarbleFrame);
+      salaryMarbleTimer = 0;
+      test7MarbleFrame = 0;
+      salaryMarbleState = 'idle';
+    }
+
+    function test7AnimateMarble(target, enabled) {
+      salaryMarbleTarget = target;
+      salaryMarbleEnabled = enabled;
+      const marble = document.getElementById('test7Marble');
+      if (!marble) return;
+      marble.style.display = enabled ? '' : 'none';
+      if (!enabled) {
+        cancelSalaryMarbleReplay();
+        paintSalaryMarble(0);
+      } else if (salaryMarbleState === 'idle') {
+        paintSalaryMarble(target);
+      }
+    }
+
+    async function requestSalaryMarbleReplay() {
+      cancelSalaryMarbleReplay();
+      if (!salaryMarbleEnabled || !salaryMarbleIsVisible()) return;
+      if (salaryMarbleMotion.matches) {
+        paintSalaryMarble(salaryMarbleTarget);
+        return;
+      }
+      salaryMarbleState = 'waiting';
+      paintSalaryMarble(0);
+      const generation = salaryMarbleGeneration;
+      // Wait for the initial document/assets and fonts, then allow the layout to paint.
+      if (document.readyState !== 'complete') {
+        await new Promise(resolve => window.addEventListener('load', resolve, {once:true}));
+      }
+      if (document.fonts) await document.fonts.ready;
+      if (generation !== salaryMarbleGeneration || !salaryMarbleIsVisible()) return;
+      test7MarbleFrame = requestAnimationFrame(() => {
+        test7MarbleFrame = requestAnimationFrame(() => {
+          if (generation !== salaryMarbleGeneration || !salaryMarbleIsVisible()) return;
+          salaryMarbleTimer = setTimeout(() => {
+            salaryMarbleTimer = 0;
+            if (generation !== salaryMarbleGeneration || !salaryMarbleIsVisible()) return;
+            salaryMarbleState = 'playing';
+            const startTime = performance.now();
+            function tick(now) {
+              if (generation !== salaryMarbleGeneration) return;
+              if (!salaryMarbleIsVisible()) { cancelSalaryMarbleReplay(); return; }
+              const t = Math.min(1, Math.max(0, (now - startTime) / 3000));
+              paintSalaryMarble(salaryMarbleTarget * (1 - Math.pow(1 - t, 3)));
+              if (t < 1) test7MarbleFrame = requestAnimationFrame(tick);
+              else { test7MarbleFrame = 0; salaryMarbleState = 'idle'; }
+            }
+            test7MarbleFrame = requestAnimationFrame(tick);
+          }, 500);
+        });
+      });
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') requestSalaryMarbleReplay();
+      else cancelSalaryMarbleReplay();
+    });
+    const updateSalaryMarbleMotion = () => {
+      if (salaryMarbleMotion.matches) {
+        cancelSalaryMarbleReplay();
+        if (salaryMarbleEnabled) paintSalaryMarble(salaryMarbleTarget);
+      }
+    };
+    if (salaryMarbleMotion.addEventListener) salaryMarbleMotion.addEventListener('change', updateSalaryMarbleMotion);
+    else salaryMarbleMotion.addListener(updateSalaryMarbleMotion);
 
     function changePayPeriodOffset(delta) {
       payPeriodOffset += delta;
@@ -3772,15 +3994,11 @@ background:#881337!important;background-color:#881337!important;border-color:#88
 
     function calcJobCalendarMonthPay(jk, viewMonth) {
       const job = configData[jk];
-      const year = viewMonth.getFullYear();
-      const month = viewMonth.getMonth();
-      const closeInput = String(job.closeDay || '20').trim();
-      const closeNum = closeInput === '月末' ? 31 : (Number(closeInput) || 20);
-      const closingDate = (y, m) =>
-        new Date(y, m, Math.min(closeNum, new Date(y, m + 1, 0).getDate()));
-      const end = closingDate(year, month);
-      const prevClose = closingDate(year, month - 1);
-      const start = new Date(prevClose.getFullYear(), prevClose.getMonth(), prevClose.getDate() + 1);
+      // 表示月の翌月に入金される予定の締め期間を、バイト先別に求める。
+      const todayMonth = new Date();
+      const receiveMonthOffset = (viewMonth.getFullYear() - todayMonth.getFullYear()) * 12
+        + (viewMonth.getMonth() - todayMonth.getMonth()) + 1;
+      const {start, end} = getJobPayPeriodRangeForReceiveMonth(job, receiveMonthOffset);
       let mins = 0, pay = 0, days = 0, commutingDays = 0;
       for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
         const r = calcJobDay(formatDateKey(d), jk, new Date(d));
@@ -3823,7 +4041,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
         <div class="hc-row"><span>勤務時間</span><span>${hm(a.mins)}</span><span>${hm(b.mins)}</span></div>
         <div class="hc-row"><span>時給・有給分</span><span>${a.wageMissing?'⚠️':yen(a.wage)}</span><span>${b.wageMissing?'⚠️':yen(b.wage)}</span></div>
         <div class="hc-row"><span>交通費・手当</span><span>${yen(a.other)}</span><span>${yen(b.other)}</span></div>`;
-      const heading = '<div class="hc-cols"><span></span><strong>今月</strong><strong>先月</strong></div>';
+      const heading = '<div class="hc-cols"><span></span><strong>来月入金予定</strong><strong>今月入金予定</strong></div>';
       const totalCell = r => r.missing ? '⚠️' : yen(r.wage + r.other);
        const totalRow = `<div class="hc-row hc-grand-total"><span>合計</span><span>${totalCell(totalNow)}</span><span>${totalCell(totalPrev)}</span></div>`;
        const totals = `<div class="hc-summary" aria-label="今月と先月の全バイト先の集計">${heading}${rowsHtml(totalNow,totalPrev)}${totalRow}</div>`;
@@ -3831,8 +4049,10 @@ background:#881337!important;background-color:#881337!important;border-color:#88
         const a=current[i], b=previous[i];
         const color=getJobPalette(jk).dot;
         const name=esc(getJobDisplayName(jk));
-        const period=`${md(a.start)}～${md(a.end)}`;
-        return `<div class="hc-job-card"><div class="hc-job-title"><i class="hc-dot" style="background:${color}"></i><strong>${name}</strong><span>${period}</span></div>${heading}${rowsHtml({mins:a.mins,wage:a.wagePay,other:a.otherPay,wageMissing:a.wageMissing},{mins:b.mins,wage:b.wagePay,other:b.otherPay,wageMissing:b.wageMissing})}</div>`;
+        const close = String(configData[jk]?.closeDay || '').trim();
+        const closeNum = close === '月末' ? 31 : (Number(close) || 20);
+        const period = !close ? '' : (closeNum >= 31 ? '1日〜末日' : `${closeNum + 1}日〜翌月${closeNum}日`);
+        return `<div class="hc-job-card"><div class="hc-job-title"><i class="hc-dot" style="background:${color}"></i><strong>${name}</strong><span>${period}</span></div>${heading}${rowsHtml({mins:a.mins,wage:a.wagePay,other:a.otherPay,wageMissing:a.wageMissing},{mins:b.mins,wage:b.wagePay,other:b.otherPay,wageMissing:b.wageMissing})}<div class="hc-row hc-grand-total"><span>合計</span><span>${a.wageMissing?'⚠️':yen(a.pay)}</span><span>${b.wageMissing?'⚠️':yen(b.pay)}</span></div></div>`;
       }).join('');
       return `<div class="hc-comparison">${totals}${cards}</div>`;
     }
@@ -3840,7 +4060,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
     function calculateMonthlyReceivePay() {
       const month = getPayViewMonthDate();
       const title = document.getElementById('monthlyReceiveTitle');
-      if (title) title.textContent = '【今月・前月の内訳】';
+      if (title) title.textContent = '【来月・今月のお給料内訳】';
       const current = document.getElementById('itoReceiveTable');
       if (current) current.innerHTML = hosshiiComparePayTable(month);
       const currentMissing = getActiveJobKeys().some(jk => calcJobCalendarMonthPay(jk, month).wageMissing);
@@ -3927,7 +4147,8 @@ background:#881337!important;background-color:#881337!important;border-color:#88
     function getPaydayJobs(d) {
       const y = d.getFullYear(), m = d.getMonth(), n = d.getDate();
       return getActiveJobKeys().filter(jk => {
-        const p = String(configData[jk].payDay || '5').trim();
+        const p = String(configData[jk].payDay || '').trim();
+        if (!p) return false; // 給料日が未設定なら表示しない
         return [getAdjustedPaydayDate(y, m, p), getAdjustedPaydayDate(y, m + 1, p)]
           .some(a => a.getFullYear() === y && a.getMonth() === m && a.getDate() === n);
       });
@@ -4020,7 +4241,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
     function getJobDisplayName(jk) {
       const raw = configData[jk]?.name;
       if (raw) return raw;
-      return jk === 'job1' ? 'バイト名1' : (jk === 'job2' ? 'バイト名2' : 'バイト名3');
+      return 'バイト先を登録してね♡';
     }
 
     function hosshiiShiftTypeMark(jk, isPaid) {
@@ -4032,7 +4253,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
       const visual = getJobVisual(jk);
       const palette = getJobPalette(jk);
       const rawName = configData[jk]?.name;
-      const placeholderName = jk === 'job1' ? 'バイト名1' : (jk === 'job2' ? 'バイト名2' : 'バイト名3');
+      const placeholderName = 'バイト先を登録してね♡';
       const displayName = rawName ? esc(rawName) : `<span class="font-normal">${placeholderName}</span>`;
       const titleName = esc(rawName || placeholderName);
       const orb = `<span class="job-color-dot" aria-hidden="true" style="display:inline-block;flex:0 0 10px;width:10px;height:10px;min-width:10px;border-radius:50%;background:${palette.dot};border:1px solid ${palette.dot};box-sizing:border-box;margin-right:1px;"></span>`;
@@ -4157,6 +4378,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
 
     function selectCalendarDate(key) {
       calSelectedDateStr = key;
+      selectedCalendarDateStr = key;
       renderCalendar();
       renderCalendarTodayTomorrowSummary();
     }
@@ -4196,7 +4418,6 @@ background:#881337!important;background-color:#881337!important;border-color:#88
       const activeKeys = getActiveJobKeys();
       let html = '';
       let hasShift = false;
-      const registerButton = `<button type="button" onclick="openShiftInputModal(calSelectedDateStr || formatDateKey(new Date()), true)" class="selected-register-button">＋シフト変更＆登録</button>`;
       activeKeys.forEach(jk => {
         const shifts = getDayShifts(dateStr, jk);
         const valid = shifts.filter(sh => sh && ((sh.start && sh.end) || (sh.isPaidLeave && ((Number(sh.hours) || Number(configData[jk]?.paidHours) || 0) > 0))));
@@ -4211,11 +4432,11 @@ background:#881337!important;background-color:#881337!important;border-color:#88
           const breakHtml = breakMins > 0 ? `<span class="selected-shift-break">休憩${breakMins}分</span>` : '';
           const realIdx = shifts.indexOf(sh);
           const deleteBtn = `<button type="button" class="selected-shift-delete" onclick="deleteSelectedDayShift('${dateStr}','${jk}',${realIdx})">削除</button>`;
-          return `<div class="selected-shift-row"><span class="selected-shift-type">${type}</span><span class="job-time">${times}</span>${breakHtml}${deleteBtn}</div>`;
+          return `<div class="selected-shift-row"><span class="job-time">${times}</span><span class="selected-shift-type">${type}</span>${breakHtml}${deleteBtn}</div>`;
         }).join('');
-        html += `<div class="selected-job-group"><div class="selected-job-heading">${getJobLabelHtml(jk)}${registerButton}</div>${lines}</div>`;
+        html += `<div class="selected-job-group"><div class="selected-job-heading">${getJobLabelHtml(jk)}</div>${lines}</div>`;
       });
-      return hasShift ? html : `<div class="text-stone-500 font-bold py-2">シフトは登録されていません</div>${registerButton}`;
+      return hasShift ? html : `<div class="text-stone-500 font-bold py-2">シフトは登録されていません</div>`;
     }
 
     function changeListMonth(delta) {
@@ -4829,7 +5050,7 @@ background:#881337!important;background-color:#881337!important;border-color:#88
 <div id="incomeWallHelp" class="fixed inset-0 bg-stone-900/60 z-[90] hidden flex items-center justify-center p-4" role="dialog" aria-modal="true" onclick="if(event.target===this)this.classList.add('hidden')"><div class="bg-white rounded-2xl p-4 max-w-sm w-full text-sm text-stone-800 space-y-3"><h3 class="font-bold text-rose-900 text-lg">🌷 年収の壁について</h3><p>お給料の見込みは税金や社会保険料が引かれる前の金額で、実際の手取りとは異なります。端数の処理や締め日などは勤務先によって異なります。</p><p>「年収の壁」に関する制度や基準額は変わることがあります。扶養・税金・社会保険の詳しい条件は、勤務先や公的機関にご確認ください。</p><button type="button" onclick="document.getElementById('incomeWallHelp').classList.add('hidden')" class="w-full rounded-xl p-3 bg-rose-900 text-white font-bold">閉じる</button></div></div>
 <script id="oct19-enhancement-scripts">
 (function(){
- window.shiftModalChangeDay=function(offset){if(!selectedCalendarDateStr)return;const [y,m,d]=selectedCalendarDateStr.split('-').map(Number);const next=new Date(y,m-1,d+offset);openShiftInputModal(formatDateKey(next));};
+ window.shiftModalChangeDay=function(offset){if(!selectedCalendarDateStr)return;const [y,m,d]=selectedCalendarDateStr.split('-').map(Number);const next=new Date(y,m-1,d+offset);openShiftInputModal(formatDateKey(next),shiftOpenedFromCalendar);};
  window.showShiftHelp=function(){document.getElementById('shiftUsageHelpModal')?.classList.remove('hidden');};
  window.closeShiftHelp=function(){document.getElementById('shiftUsageHelpModal')?.classList.add('hidden');};
  window.confirmShiftDeletion=function(jk,idx){deleteJobShiftIndexModal(jk,idx);};
@@ -5501,7 +5722,10 @@ background:#881337!important;background-color:#881337!important;border-color:#88
   let idToken=null;
   let statusBusy=false;
   function showError(t){message.textContent=t;consent.hidden=true;retry.hidden=false;}
-  function hideGate(){gate.hidden=true;}
+  function hideGate(){
+    gate.hidden=true;
+    requestSalaryMarbleReplay();
+  }
   function consentView(){message.classList.add('consent-heading');message.textContent='「初回利用のご案内」';consent.hidden=false;retry.hidden=true;}
   // test⑭: 購入状態に合わせた2行案内。決済連携は未設定のため購入操作は開始しない。
   // LINE本人確認後に取得した申込み番号のみ表示する（決済の認証には使用しない）。
@@ -6574,6 +6798,87 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
   #tab-settings .hosshii-register-input-wrap .ito-job-register-button{padding:0 8px!important;}
   #tab-settings .hosshii-register-action{padding:7px 6px!important;}
 }
+</style>
+<style id="hosshii-20261105-pay-tab-fixes">
+/* ① 無料お試し終了日・準備中の案内を+1px */
+#hosshiiTrialBanner .hosshii-trial-status-line{font-size:16px!important;}
+#hosshiiTrialBanner .hosshii-payment-preparing{font-size:12px!important;}
+@media(max-width:360px){#hosshiiTrialBanner .hosshii-trial-status-line{font-size:14px!important;}}
+/* ② 円グラフの注記：少し大きく・濃い黒（3行になってもOK） */
+p.hosshii-ring-note{font-size:13px!important;line-height:1.6!important;color:#111!important;}
+.hosshii-ring-note .hosshii-note-keep{white-space:nowrap;}
+/* ③ 来月入金予定・今月入金予定の見出しを少し小さく */
+#tab-clock .hc-cols,#tab-clock .hc-cols strong{font-size:14px!important;}
+/* バイト名の登録＆変更：新規登録は「入力欄＋登録」、修正＆削除は「選択欄＋修正＋削除」を1行で並べる */
+#tab-settings #hosshiiNewJobRow[hidden],
+#tab-settings #hosshiiJobEditRow[hidden],
+#tab-settings #settingsJobTabs[hidden]{display:none!important;}
+#tab-settings .hosshii-register-controls{display:flex!important;align-items:center!important;gap:6px!important;}
+#tab-settings #hosshiiNewJobRow,
+#tab-settings #hosshiiJobEditRow{flex:1 1 auto!important;min-width:0!important;}
+#tab-settings #settingsJobTabs{flex:0 0 auto!important;}
+#tab-settings #hosshiiJobEditSelect{width:100%!important;min-width:0!important;height:46px!important;min-height:46px!important;padding:7px 10px!important;border:1px solid #d6d3d1!important;border-radius:12px!important;background:#fff!important;font-size:15px!important;}
+#tab-settings .hosshii-register-action-row{display:flex!important;align-items:center!important;gap:6px!important;}
+/* バイト名の登録＆変更：タブをなくし、1つのプルダウンで切り替える */
+.hosshii-job-modes{display:none!important;}
+#tab-settings .hosshii-input-with-drop{position:relative;display:block;flex:1 1 auto;min-width:0;}
+#tab-settings .hosshii-input-with-drop #newJobNameInput{width:100%!important;box-sizing:border-box!important;padding-right:38px!important;}
+#tab-settings .hosshii-job-drop{position:absolute;right:4px;top:50%;transform:translateY(-50%);width:30px;height:34px;border:0;border-radius:8px;background:transparent;color:#881337;font-size:14px;line-height:1;}
+#tab-settings .hosshii-job-drop[hidden]{display:none!important;}
+/* バイト先プルダウン：選択後に出る枠をなくし、登録が1件以下のときは押せない（ポップアップなし）にする */
+#itoStickyHeaderHost .hosshii-settings-pinned-select:focus,
+#itoStickyHeaderHost .hosshii-settings-pinned-select:focus-visible,
+#tab-settings .hosshii-settings-pinned-select:focus,
+#tab-settings .hosshii-settings-pinned-select:focus-visible,
+#modalJobSelectContainer select:focus,
+#modalJobSelectContainer select:focus-visible{outline:none!important;box-shadow:none!important;}
+#itoStickyHeaderHost .hosshii-settings-pinned-select:disabled,
+#tab-settings .hosshii-settings-pinned-select:disabled{opacity:1!important;-webkit-appearance:none!important;appearance:none!important;color:#0c0a09!important;-webkit-text-fill-color:#0c0a09!important;padding:0 2px!important;}
+#modalJobSelectContainer select:disabled{opacity:1!important;-webkit-appearance:none!important;appearance:none!important;color:#242424!important;-webkit-text-fill-color:#242424!important;}
+/* バイト先の切り替え：ボタンのすぐ下に小さく開くプルダウン */
+.hosshii-pinned-trigger,.modal-job-trigger{display:inline-flex;align-items:center;gap:5px;min-width:0;border:0;background:transparent;color:#0c0a09;font-weight:800;line-height:1.3;outline:none!important;box-shadow:none;-webkit-tap-highlight-color:transparent;}
+.hosshii-pinned-trigger{font-size:17px;padding:0 2px;max-width:9em;}
+.hosshii-pinned-trigger-dot{flex:0 0 11px;width:11px;height:11px;border-radius:50%;}
+.hosshii-pinned-trigger-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.hosshii-pinned-trigger-arrow,.modal-job-trigger-arrow{font-size:14px;color:#57534e;}
+.hosshii-pinned-trigger.single,.modal-job-trigger.single{pointer-events:none;}
+.modal-job-trigger{flex:1;justify-content:space-between;text-align:left;font-size:clamp(13px,3.6vw,15px);padding:6px 1px;}
+#hosshiiJobMenu{position:fixed;z-index:20000;display:flex;flex-direction:column;max-width:calc(100vw - 16px);background:#fff;border:1px solid #e7e5e4;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,.18);padding:4px;}
+.hosshii-job-menu-item{display:flex;align-items:center;gap:8px;text-align:left;padding:10px 12px;border-radius:9px;font-size:16px;font-weight:700;color:#292524;white-space:nowrap;outline:none!important;}
+.hosshii-job-menu-item::before{content:"";flex:0 0 10px;width:10px;height:10px;border-radius:50%;background:var(--chip,#999);}
+.hosshii-job-menu-item.selected{background:#fff4f6;color:#881337;}
+.hosshii-job-menu-item.selected::after{content:"✓";margin-left:auto;padding-left:14px;}
+</style>
+<style id="hosshii-test-readability-adjustments">
+#tab-clock .hc-job-title > span {color:#374151!important;margin-left:5px;}
+#tab-clock .ito-wall-note {font-size:13px;line-height:1.7;color:#374151!important;}
+#tab-clock .ito-wall-note-condition {display:block;white-space:nowrap;}
+#tab-clock .ito-wall-note-law {display:block;margin-top:4px;}
+/* Enlarge only the glyphs; preserve the original line boxes and marker geometry. */
+#standaloneShiftListContainer .standalone-shift-line .job-time {font-size:18px!important;line-height:23.1875px;}
+@media(max-width:380px){
+  #standaloneShiftListContainer .standalone-shift-line .job-time {font-size:17px!important;line-height:21.75px;}
+}
+</style>
+<style id="hosshii-test-clear-text-adjustments">
+/* Override the older important color rules only for the requested explanations. */
+#tab-clock #itoReceiveTable .hc-job-title > span {color:#333!important;margin-left:10px;}
+#tab-clock #incomeWallBox .ito-wall-note,
+#tab-clock #incomeWallBox .ito-wall-note span,
+#tab-calendar .calendar-registration-prompt > p,
+#shiftInputModal .hosshii-paid-entry-note {color:#333!important;}
+#shiftInputModal #shiftInputScrollArea .shift-preset-section .ito-preset-desc {
+  font-size:clamp(13px,calc(3.35vw + 1px),15px)!important;
+}
+/* Keep the existing empty-row box so dates and following rows do not move. */
+#standaloneShiftListContainer .standalone-empty {visibility:hidden;}
+</style>
+<style id="hosshii-test-explanation-weight">
+/* Retain #333 and existing sizes/spacing; make only these explanations semibold. */
+#tab-clock #itoReceiveTable .hc-job-title > span,
+#tab-clock #incomeWallBox .ito-wall-note,
+#tab-calendar .calendar-registration-prompt > p,
+#shiftInputModal .hosshii-paid-entry-note {font-weight:600!important;}
 </style>
 </body>
 </html>
