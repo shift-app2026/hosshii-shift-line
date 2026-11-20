@@ -343,3 +343,12 @@ html body #appCard #appScroll #tab-guide section:last-child p:not(#goalRing) {le
 html body #appCard #appScroll #tab-guide .guide-home-card .guide-home-action:not(#goalRing) {font-size:clamp(13.5px,4vw,16px)!important;letter-spacing:-.015em!important;}
 html body #appCard #tab-guide .guide-home-action>span {display:block!important;white-space:nowrap!important;}
 }
+
+/* Example placeholders only; preserve entered text and all existing type/layout rules. */
+@layer android-readability {
+html body :is(input,textarea)[placeholder^="例"]::placeholder {
+  color:#9ca3af!important;
+  -webkit-text-fill-color:#9ca3af!important;
+  opacity:1!important;
+}
+}
