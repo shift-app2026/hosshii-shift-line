@@ -5843,8 +5843,8 @@ background:#881337!important;background-color:#881337!important;border-color:#88
   const agree=document.getElementById('lineAuthAgree');
   const ageAgree=document.getElementById('lineAuthAgeAgree');
   // 公開済みの正式なURLを設定してください（未設定時は同意開始不可）。
-  const TERMS_URL = new URL('./terms.html', location.href).href;
-  const PRIVACY_URL = new URL('./privacy.html', location.href).href;
+  const TERMS_URL = new URL('./terms.html?v=20261120', location.href).href;
+  const PRIVACY_URL = new URL('./privacy.html?v=20261120', location.href).href;
   const docsReady = /^https:\/\//.test(TERMS_URL) && /^https:\/\//.test(PRIVACY_URL);
   if (docsReady) {
     document.getElementById('lineAuthTermsLink').href=TERMS_URL;
@@ -6048,11 +6048,12 @@ background:#881337!important;background-color:#881337!important;border-color:#88
     const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),10000);
     let r,data;
     try {
-      r=await fetch(STATUS_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,body:JSON.stringify({idToken,...(accept?{consentAccepted:true,termsVersion:'2026-10-29',privacyVersion:'2026-10-29'}: {})})});
+      r=await fetch(STATUS_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},signal:controller.signal,body:JSON.stringify({idToken,...(accept?{consentAccepted:true,termsVersion:'2026-11-20',privacyVersion:'2026-11-20'}: {})})});
       // Keep the deadline active until the response body has finished too.
       try {data=await r.json();}catch(_){throw Error('サーバーの応答を読み取れませんでした（HTTP '+r.status+'）。');}
     } finally {clearTimeout(timeout);}
     if(!r.ok){
+      if(r.status===409 && data.error==='Document versions do not match')throw Error('利用規約が更新されています。画面を再読み込みし、新しい利用規約・プライバシーポリシーを確認して、同意し直してください。再読み込みしても同じ表示になる場合は、LINE公式アカウントのトークからアプリを開き直してください。');
       if(r.status===401)throw Error('LINE認証がサーバーで拒否されました（401）。LINE公式アカウントのトークからアプリを開き直してください。繰り返す場合はサーバー側のLINEトークン検証を確認する必要があります。');
       throw Error('接続に失敗しました（HTTP '+r.status+'：'+String(data.error||'確認できません')+'）。');
     }
