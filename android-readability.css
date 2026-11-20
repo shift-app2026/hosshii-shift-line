@@ -352,3 +352,17 @@ html body :is(input,textarea)[placeholder^="例"]::placeholder {
   opacity:1!important;
 }
 }
+
+/* Wrap only trial help copy; preserve typography and business behavior. */
+@layer android-readability {
+html body #appCard #tab-list .schedule-instructions {
+  min-width:0!important;max-width:100%!important;white-space:normal!important;
+  overflow-wrap:anywhere!important;box-sizing:border-box!important;
+}
+html body #appCard #appScroll #tab-guide .guide-calendar-help .guide-help-line {
+  white-space:normal!important;overflow-wrap:anywhere!important;min-width:0!important;
+}
+html body #appCard #appScroll :is(#tab-list,#tab-settings,#tab-guide) .trial-period-word {
+  display:inline-block!important;white-space:nowrap!important;
+}
+}
